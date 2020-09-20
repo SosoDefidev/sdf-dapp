@@ -1,6 +1,14 @@
-import { Button } from 'antd'
+import Navbar from '@components/Navbar'
+import HomeContainer from '@containers/Home'
 import React from 'react'
 
-export const Home: React.FunctionComponent = () => <Button>hello</Button>
+export const Home: React.FunctionComponent = () => {
+  return (
+    <>
+      <Navbar />
+      <HomeContainer />
+    </>
+  )
+}
 
 export default Home

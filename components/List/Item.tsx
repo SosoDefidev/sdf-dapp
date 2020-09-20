@@ -7,9 +7,10 @@ export type DataType = {
 }
 export type Props = {
   data: DataType[]
+  renderExpand?: () => React.ReactNode
 }
 
-const Item: React.FunctionComponent<Props> = ({ data }) => {
+const Item: React.FunctionComponent<Props> = ({ data, renderExpand }) => {
   return (
     <>
       <div className="item">
@@ -24,6 +25,7 @@ const Item: React.FunctionComponent<Props> = ({ data }) => {
           </span>
         ))}
       </div>
+      {renderExpand ? <div className="expand">{renderExpand()}</div> : null}
       <style jsx>{`
         .item {
           display: flex;
@@ -32,6 +34,10 @@ const Item: React.FunctionComponent<Props> = ({ data }) => {
 
         .item > span {
           flex: 1 1 auto;
+        }
+
+        .expand {
+          margin-top: 20px;
         }
       `}</style>
     </>

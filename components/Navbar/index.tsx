@@ -15,7 +15,7 @@ const Navbar: React.FunctionComponent = () => {
         <ActiveLink href="/">
           <a>Home</a>
         </ActiveLink>
-        <ActiveLink href="stake">
+        <ActiveLink href="/stake">
           <a>Stake</a>
         </ActiveLink>
         <div className="unlock" onClick={() => connect('injected')}>

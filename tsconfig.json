@@ -16,9 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@containers/*": ["./containers/*"],
-      "@components/*": ["./components/*"],
-      "@icons/*": ["./icons/*"]
     }
   },
   "exclude": ["node_modules", ".next", "out"],

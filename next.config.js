@@ -36,4 +36,6 @@ const nextConfig = {
   }
 }
 
-module.exports = withPlugins([svg, images, less], nextConfig)
+module.exports = withPlugins([svg, [images, {
+  fileExtensions: ["jpg", "jpeg", "png", "gif"]
+}], less], nextConfig)

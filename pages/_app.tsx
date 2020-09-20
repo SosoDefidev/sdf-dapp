@@ -3,6 +3,8 @@ import Head from 'next/head'
 import * as React from 'react'
 import { UseWalletProvider } from 'use-wallet'
 
+import Header from '@/components/Header'
+import Hero from '@/components/Hero'
 import { ViewportProvider } from '@/shared/providers/ViewportProvider'
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -29,6 +31,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           <meta httpEquiv="Cache-Control" content="no-cache, must-revalidate" />
           <meta httpEquiv="expires" content="0" />
         </Head>
+        <Header />
+        <Hero />
         <Component {...pageProps} />
       </ViewportProvider>
     </UseWalletProvider>

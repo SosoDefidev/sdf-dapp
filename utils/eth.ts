@@ -1,5 +1,6 @@
-import { ERC20_ABI } from '@/shared/constants'
 import Web3 from 'web3'
+
+import { ERC20_ABI } from '@/shared/constants'
 
 let web3: Web3
 

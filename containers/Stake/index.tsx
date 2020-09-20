@@ -8,7 +8,7 @@ import Pools from './components/Pools'
 const Stake: React.FunctionComponent = () => {
   const theme = useTheme()
 
-  const [pool, setPool] = React.useState(null)
+  const [pool, setPool] = React.useState<any>(null)
 
   return (
     <>

@@ -5,12 +5,34 @@ import React from 'react'
 import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
 import useTheme from '@/shared/hooks/useTheme'
+import { useViewport } from '@/shared/providers/ViewportProvider'
 const { Title } = Typography
 
 const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
   const theme = useTheme()
+  const { width } = useViewport()
 
-  const options: DataType[] = [{ width: '40%' }, { width: '40%' }, { width: '20%' }]
+  const options: DataType[] = [
+    { width: width > 736 ? '40%' : '100%' },
+    { width: width > 736 ? '40%' : '100%' },
+    { width: width > 736 ? '20%' : '100%' }
+  ]
+
+  const Items: React.FunctionComponent = ({ children }) => (
+    <>
+      <div>{children}</div>
+      <style jsx>{`
+        div {
+        }
+
+        @media screen and (max-width: 736px) {
+          div {
+            margin-top: 20px;
+          }
+        }
+      `}</style>
+    </>
+  )
 
   const combineOptions = (data: DataType[]): DataType[] =>
     data.map((d, index) => ({ ...d, ...options[index] }))
@@ -45,6 +67,7 @@ const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
             <div className="text">
               <h6>Seed Pool v2</h6>
               <p>USDT,USDC,TUSD,DAI</p>
+              {width <= 736 && <p>0xC2D5...0AC8</p>}
             </div>
             <style jsx>{`
               span {
@@ -70,28 +93,51 @@ const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
                 font-size: 12px;
                 line-height: 20px;
               }
+
+              @media screen and (max-width: 736px) {
+                span {
+                  display: flex;
+                  align-items: center;
+                }
+                .logo {
+                  width: 60px;
+                  height: 60px;
+                  margin-right: 20px;
+                  border-radius: 30px;
+                }
+                .text h6 {
+                  font-size: 16px;
+                  line-height: 26px;
+                }
+                .text p {
+                  font-size: 12px;
+                  line-height: 26px;
+                }
+              }
             `}</style>
           </span>
         )
       },
       {
-        title: '0xC2D5...0AC8'
+        title: width > 736 && <Items>0xC2D5...0AC8</Items>
       },
       {
         title: (
-          <>
-            <Button shape="round" onClick={onSelect}>
-              Farm <ArrowRightOutlined />
-            </Button>
-            <style jsx global>{`
-              .ant-btn.ant-btn-round {
-                padding: 0 30px;
-                color: #fddb93;
-                background-color: transparent;
-                border-color: #fddb93;
-              }
-            `}</style>
-          </>
+          <Items>
+            <>
+              <Button shape="round" onClick={onSelect}>
+                Farm <ArrowRightOutlined />
+              </Button>
+              <style jsx global>{`
+                .ant-btn.ant-btn-round {
+                  padding: 0 30px;
+                  color: #fddb93;
+                  background-color: transparent;
+                  border-color: #fddb93;
+                }
+              `}</style>
+            </>
+          </Items>
         )
       }
     ])
@@ -103,7 +149,7 @@ const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
         <Title level={3}>Select a farm to stake</Title>
       </div>
       <List>
-        <List.Item data={titles} />
+        {width > 736 && <List.Item data={titles} />}
         {items.map((item, index) => (
           <List.Item data={item} key={index} />
         ))}
@@ -111,6 +157,12 @@ const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
       <style jsx>{`
         .title {
           margin: 40px 0;
+        }
+
+        @media screen and (max-width: 736px) {
+          .title {
+            display: none;
+          }
         }
       `}</style>
     </>

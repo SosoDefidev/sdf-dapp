@@ -15,10 +15,12 @@ const Home: React.FunctionComponent = () => {
     <>
       <div className="container">
         <Info />
-        <div className="title">
-          <Title level={3}>SDF/Pools</Title>
+        <div className="pools">
+          <div className="title">
+            <Title level={3}>SDF/Pools</Title>
+          </div>
+          <Pools />
         </div>
-        <Pools />
       </div>
       <style jsx>{`
         .container {
@@ -26,8 +28,31 @@ const Home: React.FunctionComponent = () => {
           margin: 65px auto 0 auto;
         }
 
-        .container .title {
+        .title {
           margin: 80px 0 40px 0;
+        }
+
+        @media screen and (max-width: 736px) {
+          .container {
+            width: 100%;
+            margin: 20px auto;
+          }
+
+          .pools {
+            padding: 30px 20px;
+            margin: 30px 0;
+            border-radius: 24px;
+
+            background-color: #fbfbfb;
+          }
+
+          .title {
+            margin: 0;
+            text-indent: 10px;
+          }
+          .title :global(.ant-typography) {
+            font-size: 18px;
+          }
         }
       `}</style>
     </>

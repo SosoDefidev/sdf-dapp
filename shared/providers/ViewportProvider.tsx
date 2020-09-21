@@ -4,7 +4,12 @@ import { useWindowSize } from 'react-use'
 const viewportContext = React.createContext({ width: 0, height: 0 })
 
 const ViewportProvider: React.FunctionComponent = ({ children }) => {
-  const { width, height } = useWindowSize()
+  const [{ width, height }, setRect] = React.useState({ width: 1920, height: 1080 })
+  const { width: w, height: h } = useWindowSize()
+
+  React.useEffect(() => {
+    setRect({ width: w, height: h })
+  }, [w, h])
 
   return <viewportContext.Provider value={{ width, height }}>{children}</viewportContext.Provider>
 }

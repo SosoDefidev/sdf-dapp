@@ -12,12 +12,14 @@ const Navbar: React.FunctionComponent = () => {
   return (
     <>
       <nav>
-        <ActiveLink href="/">
-          <a>Home</a>
-        </ActiveLink>
-        <ActiveLink href="/stake">
-          <a>Stake</a>
-        </ActiveLink>
+        <div className="links">
+          <ActiveLink href="/">
+            <a>Home</a>
+          </ActiveLink>
+          <ActiveLink href="/stake">
+            <a>Stake</a>
+          </ActiveLink>
+        </div>
         <div className="unlock" onClick={() => connect('injected')}>
           <img src={require('@/assets/imgs/unlock-wallet.png')} alt="Unlock Wallet" />
           Unlock Wallet
@@ -27,6 +29,7 @@ const Navbar: React.FunctionComponent = () => {
         nav {
           position: relative;
           display: flex;
+          justify-content: space-between;
           align-items: center;
           width: ${theme['@container-width']};
           padding: 12px 0;
@@ -47,9 +50,6 @@ const Navbar: React.FunctionComponent = () => {
         }
 
         .unlock {
-          position: absolute;
-          right: 0;
-
           display: flex;
           align-items: center;
 
@@ -60,6 +60,29 @@ const Navbar: React.FunctionComponent = () => {
         }
         .unlock img {
           margin-right: 17px;
+        }
+        @media screen and (max-width: 736px) {
+          nav {
+            width: 100%;
+            padding: 12px 26px;
+            background-color: #fff;
+          }
+          nav a {
+            margin-right: 40px;
+            font-size: 16px;
+            line-height: 24px;
+          }
+
+          .unlock {
+            right: 26px;
+            font-size: 16px;
+            color: #1b1b1b;
+            line-height: 24px;
+          }
+          .unlock img {
+            width: 16px;
+            margin-right: 8px;
+          }
         }
       `}</style>
     </>

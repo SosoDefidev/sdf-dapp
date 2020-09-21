@@ -37,6 +37,17 @@ const Header: React.FunctionComponent = () => {
           height: 36px;
           margin-right: 8px;
         }
+
+        @media screen and (max-width: 736px) {
+          header {
+            height: 80px;
+          }
+
+          .container {
+            width: 100%;
+            padding: 0 20px;
+          }
+        }
       `}</style>
     </>
   )

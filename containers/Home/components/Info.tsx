@@ -54,24 +54,29 @@ const TokenInfo: React.FunctionComponent = () => {
 
 const Info: React.FunctionComponent = () => {
   return (
-    <TopPanelContainer>
-      <TopPanel type="primary">
-        <Title level={3}>$809,317.45</Title>
-        <Text type="secondary">Total Value Locked(USD)</Text>
-      </TopPanel>
-      <TopPanel>
-        <Title level={3}>$809,317.45</Title>
-        <Text type="secondary">Total Value Locked(USD)</Text>
-      </TopPanel>
-      <TopPanel>
-        <TokenInfo />
-      </TopPanel>
+    <div>
+      <TopPanelContainer>
+        <TopPanel type="primary">
+          <Title level={3}>$809,317.45</Title>
+          <Text type="secondary">Total Value Locked(USD)</Text>
+        </TopPanel>
+        <TopPanel>
+          <Title level={3}>$809,317.45</Title>
+          <Text type="secondary">Total Value Locked(USD)</Text>
+        </TopPanel>
+        <TopPanel>
+          <TokenInfo />
+        </TopPanel>
+      </TopPanelContainer>
       <style jsx>{`
         :global(.panel.primary .ant-typography) {
           color: #fff;
         }
+        div > :global(.container) {
+          padding: 0 20px;
+        }
       `}</style>
-    </TopPanelContainer>
+    </div>
   )
 }
 

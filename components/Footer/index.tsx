@@ -90,6 +90,20 @@ const Footer: React.FunctionComponent = () => {
           text-align: center;
           background-color: rgba(131, 131, 131, 0.11);
         }
+
+        @media screen and (max-width: 736px) {
+          footer {
+            margin-top: 60px;
+          }
+          .container {
+            width: 100%;
+            padding: 20px;
+          }
+
+          .footer-links > a {
+            margin-left: 12px;
+          }
+        }
       `}</style>
     </>
   )

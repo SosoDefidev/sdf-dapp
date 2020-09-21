@@ -36,6 +36,22 @@ const TopPanel: React.FunctionComponent<{ type?: 'primary' }> = ({ children, typ
         .child {
           flex: 1;
         }
+
+        @media screen and (max-width: 736px) {
+          .panel {
+            padding: 25px;
+            margin: 0 0 30px 0;
+          }
+          .panel:nth-last-of-type(1) {
+            margin: 0 0 0 0;
+          }
+
+          .panel.primary {
+            background-color: ${theme['@primary-color']};
+
+            color: #fff;
+          }
+        }
       `}</style>
     </>
   )
@@ -50,6 +66,12 @@ const TopPanelContainer: React.FunctionComponent = ({ children }) => {
           display: flex;
           justify-content: space-between;
           align-items: stretch;
+        }
+
+        @media screen and (max-width: 736px) {
+          .container {
+            flex-direction: column;
+          }
         }
       `}</style>
     </>

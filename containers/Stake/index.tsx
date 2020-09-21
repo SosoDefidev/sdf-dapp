@@ -13,20 +13,37 @@ const Stake: React.FunctionComponent = () => {
   return (
     <>
       <div className="container">
-        {pool ? (
-          <Farm />
-        ) : (
-          <Pools
-            onSelect={() => {
-              setPool({})
-            }}
-          />
-        )}
+        <div className="content">
+          {pool ? (
+            <Farm />
+          ) : (
+            <Pools
+              onSelect={() => {
+                setPool({})
+              }}
+            />
+          )}
+        </div>
       </div>
       <style jsx>{`
         .container {
           width: ${theme['@container-width']};
           margin: 65px auto 0 auto;
+        }
+
+        @media screen and (max-width: 736px) {
+          .container {
+            width: 100%;
+            margin: 20px auto;
+          }
+
+          .content {
+            padding: 30px 20px;
+            margin: 30px 0;
+            border-radius: 24px;
+
+            background-color: #fbfbfb;
+          }
         }
       `}</style>
     </>

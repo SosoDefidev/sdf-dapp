@@ -18,6 +18,12 @@ const Hero: React.FunctionComponent = () => {
           margin: 0 auto;
           user-select: none;
         }
+
+        @media screen and (max-width: 736px) {
+          div {
+            display: none;
+          }
+        }
       `}</style>
     </>
   )

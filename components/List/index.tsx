@@ -6,9 +6,7 @@ const List: React.FunctionComponent & { Item: typeof Item } = ({ children }) => 
   return (
     <>
       <div className="list">
-        {React.Children.map(children, (child) => (
-          <div className="list-cell">{child}</div>
-        ))}
+        {React.Children.map(children, (child) => child && <div className="list-cell">{child}</div>)}
       </div>
       <style jsx>{`
         .list {
@@ -26,6 +24,15 @@ const List: React.FunctionComponent & { Item: typeof Item } = ({ children }) => 
         }
         .list > .list-cell:nth-last-of-type(1) {
           margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 736px) {
+          .list-cell {
+            padding: 25px;
+            margin-bottom: 24px;
+
+            border-radius: 24px;
+          }
         }
       `}</style>
     </>

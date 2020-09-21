@@ -39,6 +39,13 @@ const Item: React.FunctionComponent<Props> = ({ data, renderExpand }) => {
         .expand {
           margin-top: 20px;
         }
+
+        @media screen and (max-width: 736px) {
+          .item {
+            flex-direction: column;
+            align-items: stretch;
+          }
+        }
       `}</style>
     </>
   )

@@ -1,16 +1,23 @@
 import { ArrowRightOutlined } from '@ant-design/icons'
 import { Button, Typography } from 'antd'
 import React from 'react'
+import { useWallet } from 'use-wallet'
 
+import { PoolType } from '@/api'
 import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
+import { SCAN_URL } from '@/shared/constants'
 import useTheme from '@/shared/hooks/useTheme'
+import { useApp } from '@/shared/providers/AppProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
+import { shortenAddress } from '@/utils/string'
 const { Title } = Typography
 
-const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
+const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ onSelect }) => {
   const theme = useTheme()
   const { width } = useViewport()
+  const wallet = useWallet()
+  const { pools } = useApp()
 
   const options: DataType[] = [
     { width: width > 736 ? '40%' : '100%' },
@@ -58,16 +65,23 @@ const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
     }
   ])
 
-  const items = Array.from({ length: 2 }, () =>
+  const items = pools.map((pool) =>
     combineOptions([
       {
         title: (
           <span>
             <div className="logo" />
             <div className="text">
-              <h6>Seed Pool v2</h6>
-              <p>USDT,USDC,TUSD,DAI</p>
-              {width <= 736 && <p>0xC2D5...0AC8</p>}
+              <h6>{pool.name}</h6>
+              <p>{pool.supportTokens.map((token) => token.name).join(',')}</p>
+              {width <= 736 && (
+                <a
+                  href={SCAN_URL[wallet.chainId + ''] + '/address/' + pool.address}
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  <p>{shortenAddress(pool.address)}</p>
+                </a>
+              )}
             </div>
             <style jsx>{`
               span {
@@ -79,7 +93,9 @@ const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
                 height: 30px;
                 margin-right: 12px;
                 border-radius: 15px;
-                background-color: ${theme['@primary-color']};
+                background: url(${pool.icon}) no-repeat;
+                background-size: cover;
+                background-position: center;
               }
               .text h6 {
                 margin: 0;
@@ -119,13 +135,22 @@ const Pools: React.FunctionComponent<{ onSelect(): void }> = ({ onSelect }) => {
         )
       },
       {
-        title: width > 736 && <Items>0xC2D5...0AC8</Items>
+        title: width > 736 && (
+          <Items>
+            <a
+              href={SCAN_URL[wallet.chainId + ''] + '/address/' + pool.address}
+              target="_blank"
+              rel="noopener noreferrer">
+              <p>{shortenAddress(pool.address)}</p>
+            </a>
+          </Items>
+        )
       },
       {
         title: (
           <Items>
             <>
-              <Button shape="round" onClick={onSelect}>
+              <Button shape="round" onClick={() => onSelect(pool)}>
                 Farm <ArrowRightOutlined />
               </Button>
               <style jsx global>{`

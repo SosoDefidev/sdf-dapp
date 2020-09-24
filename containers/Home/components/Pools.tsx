@@ -3,11 +3,13 @@ import React from 'react'
 import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
 import useTheme from '@/shared/hooks/useTheme'
+import { useApp } from '@/shared/providers/AppProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
 
 const Pools: React.FunctionComponent = () => {
   const theme = useTheme()
   const { width } = useViewport()
+  const app = useApp()
 
   const options: DataType[] = [
     { width: width > 736 ? '20%' : '100%' },
@@ -94,15 +96,15 @@ const Pools: React.FunctionComponent = () => {
     }
   ])
 
-  const items = Array.from({ length: 2 }, () =>
+  const items = app.pools.map((pool) =>
     combineOptions([
       {
         title: (
           <span>
             <div className="logo" />
             <div className="text">
-              <h6>Seed Pool v2</h6>
-              <p>USDT,USDC,TUSD,DAI</p>
+              <h6>{pool.name}</h6>
+              <p>{pool.supportTokens.map((token) => token.name).join(',')}</p>
             </div>
             <style jsx>{`
               span {
@@ -115,6 +117,9 @@ const Pools: React.FunctionComponent = () => {
                 margin-right: 12px;
                 border-radius: 15px;
                 background-color: ${theme['@primary-color']};
+                background: url(${pool.icon}) no-repeat;
+                background-size: cover;
+                background-position: center;
               }
               .text h6 {
                 margin: 0;

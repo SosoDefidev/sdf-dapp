@@ -2,11 +2,13 @@ import React from 'react'
 import { useWallet } from 'use-wallet'
 
 import useTheme from '@/shared/hooks/useTheme'
+import { useApp } from '@/shared/providers/AppProvider'
 
 import ActiveLink from '../ActiveLink'
 
 const Navbar: React.FunctionComponent = () => {
-  const { connect } = useWallet()
+  const { connect, status } = useWallet()
+  const { accountShort } = useApp()
   const theme = useTheme()
 
   return (
@@ -20,10 +22,18 @@ const Navbar: React.FunctionComponent = () => {
             <a>Stake</a>
           </ActiveLink>
         </div>
-        <div className="unlock" onClick={() => connect('injected')}>
-          <img src={require('@/assets/imgs/unlock-wallet.png')} alt="Unlock Wallet" />
-          Unlock Wallet
-        </div>
+        {
+          <div
+            className="unlock"
+            onClick={() => {
+              if (status === 'connected') return
+
+              connect('injected')
+            }}>
+            <img src={require('@/assets/imgs/unlock-wallet.png')} alt="Unlock Wallet" />
+            {accountShort || 'Unlock Wallet'}
+          </div>
+        }
       </nav>
       <style jsx>{`
         nav {

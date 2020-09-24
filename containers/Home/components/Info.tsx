@@ -2,10 +2,14 @@ import { Typography } from 'antd'
 import React from 'react'
 
 import { TopPanel, TopPanelContainer } from '@/components/TopPanel'
+import { useApp } from '@/shared/providers/AppProvider'
+import { usePool } from '@/shared/providers/PoolProvider'
 
 const { Text, Title } = Typography
 
 const TokenInfo: React.FunctionComponent = () => {
+  const { totalSupply, maxSupply, circulating, web3 } = useApp()
+
   return (
     <table>
       <tbody>
@@ -14,7 +18,7 @@ const TokenInfo: React.FunctionComponent = () => {
             <Text type="secondary">Circulating</Text>
           </td>
           <td>
-            <Text>231,345,654.67 SDF</Text>
+            <Text>{web3.utils.fromWei(circulating)} SDF</Text>
           </td>
         </tr>
         <tr>
@@ -22,7 +26,7 @@ const TokenInfo: React.FunctionComponent = () => {
             <Text type="secondary">Current Total Supply</Text>
           </td>
           <td>
-            <Text>564,345,654.67 SDF</Text>
+            <Text>{web3.utils.fromWei(totalSupply)} SDF</Text>
           </td>
         </tr>
         <tr>
@@ -30,7 +34,7 @@ const TokenInfo: React.FunctionComponent = () => {
             <Text type="secondary">Max Supply</Text>
           </td>
           <td>
-            <Text>3,345,654.67 SDF</Text>
+            <Text>{web3.utils.fromWei(maxSupply)} SDF</Text>
           </td>
         </tr>
       </tbody>
@@ -53,16 +57,20 @@ const TokenInfo: React.FunctionComponent = () => {
 }
 
 const Info: React.FunctionComponent = () => {
+  const app = useApp()
+  const pool = usePool()
+  const { web3 } = app
+
   return (
     <div>
       <TopPanelContainer>
         <TopPanel type="primary">
-          <Title level={3}>$809,317.45</Title>
+          <Title level={3}>${web3.utils.fromWei(pool.allPoolLocked)}</Title>
           <Text type="secondary">Total Value Locked(USD)</Text>
         </TopPanel>
         <TopPanel>
-          <Title level={3}>$809,317.45</Title>
-          <Text type="secondary">Total Value Locked(USD)</Text>
+          <Title level={3}>${app.sdfPrice}</Title>
+          <Text type="secondary">SDF Price(USD)</Text>
         </TopPanel>
         <TopPanel>
           <TokenInfo />

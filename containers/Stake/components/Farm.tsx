@@ -1,25 +1,53 @@
-import { Button, Col, Input, Row } from 'antd'
+import { Button, Input } from 'antd'
+import BigNumber from 'bignumber.js'
 import React from 'react'
 
 import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
 import { TopPanel, TopPanelContainer } from '@/components/TopPanel'
 import USDTSvg from '@/icons/USDT.svg'
+import useERC20 from '@/shared/hooks/useERC20'
 import useTheme from '@/shared/hooks/useTheme'
+import { useApp } from '@/shared/providers/AppProvider'
+import { usePool } from '@/shared/providers/PoolProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
 
 import PoolInfo from './PoolInfo'
 
-const Expand = ({ close }: { close: () => void }) => {
+type ActionType = 'farm' | 'unfarm'
+
+const Expand = ({
+  action,
+  onClick,
+  close
+}: {
+  action: ActionType
+  onClick: (value: string, action: ActionType) => void
+  close: () => void
+}) => {
   const theme = useTheme()
+  const [value, setValue] = React.useState('')
+  const pool = usePool()
 
   return (
     <>
       <div className="container">
-        <Input prefix={<USDTSvg width={22} height={22} />} suffix="USDT" placeholder="0.00" />
+        <Input
+          prefix={<USDTSvg width={22} height={22} />}
+          suffix="USDT"
+          placeholder="0.00"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
         <div className="submit">
-          <Button type="primary" size="large">
-            Farm
+          <Button
+            type="primary"
+            size="large"
+            loading={pool.loading}
+            onClick={() => {
+              onClick(value, action)
+            }}>
+            {action === 'farm' ? 'Farm' : 'Unfarm'}
           </Button>
           <Button size="large" onClick={close}>
             Close
@@ -89,8 +117,13 @@ const Expand = ({ close }: { close: () => void }) => {
 
 const Farm: React.FunctionComponent = () => {
   const theme = useTheme()
-  const [expandIndex, setExpandIndex] = React.useState(-1)
+  const [action, setAction] = React.useState<ActionType>('farm')
+  const [tokenAddress, setTokenAddress] = React.useState('')
+  const app = useApp()
   const { width } = useViewport()
+  const { account, currentPool, maxValue, web3 } = useApp()
+  const erc20 = useERC20(tokenAddress, account, web3)
+  const pool = usePool()
 
   const options: DataType[] = [
     { width: width > 736 ? '35%' : '100%' },
@@ -140,21 +173,43 @@ const Farm: React.FunctionComponent = () => {
     )
   }
 
-  const items = Array.from({ length: 2 }).map((_, index) =>
+  const items = app.currentPool?.supportTokens.map((token) =>
     combineOptions([
       {
-        title: <Items title="0USDT" desc="USDT,USDC,TUSD,DAI" />
+        title: (
+          <Items
+            title={new BigNumber(web3.utils.fromWei(pool.totalLocked)).toFixed(4) + 'USDT'}
+            desc={token.name}
+          />
+        )
       },
       {
-        title: <Items title="0USDT" desc="Currently Farming" />
+        title: (
+          <Items
+            title={new BigNumber(web3.utils.fromWei(pool.reward)).toFixed(4) + 'SDF'}
+            desc="Currently Farming"
+          />
+        )
       },
       {
         title: (
           <div>
-            <Button type="link" onClick={() => setExpandIndex(index)}>
+            <Button
+              type="link"
+              onClick={() => {
+                setAction('farm')
+                setTokenAddress(token.address)
+              }}>
               Farm
             </Button>
-            <Button type="text">Unfarm</Button>
+            <Button
+              type="text"
+              onClick={() => {
+                setAction('unfarm')
+                setTokenAddress(token.address)
+              }}>
+              Unfarm
+            </Button>
             <style jsx>{`
               div {
                 text-align: right;
@@ -166,7 +221,32 @@ const Farm: React.FunctionComponent = () => {
     ])
   )
 
-  const renderExpand = () => <Expand close={() => setExpandIndex(-1)} />
+  const renderExpand = () => (
+    <Expand
+      action={action}
+      onClick={(value, action) => {
+        erc20
+          .allowance(currentPool?.address + '')
+          .then((num) => {
+            if (
+              new BigNumber(num).isLessThan(
+                new BigNumber(value).multipliedBy(new BigNumber(web3.utils.toWei('1')))
+              )
+            ) {
+              return erc20.approve(account, maxValue)
+            }
+          })
+          .then(() => {
+            if (action === 'farm') {
+              return pool.stake(tokenAddress, web3.utils.toWei(value))
+            } else {
+              return pool.withdraw(tokenAddress, web3.utils.toWei(value))
+            }
+          })
+      }}
+      close={() => setTokenAddress('')}
+    />
+  )
 
   return (
     <>
@@ -177,11 +257,15 @@ const Farm: React.FunctionComponent = () => {
       </TopPanelContainer>
       <div className="list">
         <List>
-          {items.map((item, index) => (
+          {items?.map((item, index) => (
             <List.Item
               data={item}
               key={index}
-              renderExpand={expandIndex === index ? renderExpand : undefined}
+              renderExpand={
+                tokenAddress === app.currentPool?.supportTokens[index].address
+                  ? renderExpand
+                  : undefined
+              }
             />
           ))}
         </List>

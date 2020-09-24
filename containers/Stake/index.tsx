@@ -1,25 +1,28 @@
 import React from 'react'
 
 import useTheme from '@/shared/hooks/useTheme'
+import { useApp } from '@/shared/providers/AppProvider'
 
 import Farm from './components/Farm'
 import Pools from './components/Pools'
 
 const Stake: React.FunctionComponent = () => {
   const theme = useTheme()
+  const app = useApp()
 
-  const [pool, setPool] = React.useState<any>(null)
+  const [poolVisible, setPoolVisible] = React.useState<any>(null)
 
   return (
     <>
       <div className="container">
         <div className="content">
-          {pool ? (
+          {poolVisible ? (
             <Farm />
           ) : (
             <Pools
-              onSelect={() => {
-                setPool({})
+              onSelect={(pool) => {
+                app.tooglePool(pool)
+                setPoolVisible(true)
               }}
             />
           )}

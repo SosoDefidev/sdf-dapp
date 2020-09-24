@@ -61,6 +61,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
       setAccount(wallet.account + '')
       setBalance(wallet.balance + '')
       web3.current = new Web3(wallet.ethereum)
+      localStorage.setItem('address', wallet.account + '')
     }
   }, [wallet])
 
@@ -68,6 +69,11 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
     getPools().then((data) => {
       setPools(data)
     })
+
+    const account = localStorage.getItem('address')
+    if (account) {
+      wallet.connect('injected')
+    }
   }, [])
 
   React.useEffect(() => {

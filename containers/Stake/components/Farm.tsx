@@ -22,12 +22,12 @@ const Expand = ({
   close
 }: {
   action: ActionType
-  onClick: (value: string, action: ActionType) => void
+  onClick: (value: string, action: ActionType) => Promise<any>
   close: () => void
 }) => {
   const theme = useTheme()
   const [value, setValue] = React.useState('')
-  const pool = usePool()
+  const [loading, setLoading] = React.useState(false)
 
   return (
     <>
@@ -43,9 +43,12 @@ const Expand = ({
           <Button
             type="primary"
             size="large"
-            loading={pool.loading}
+            loading={loading}
             onClick={() => {
-              onClick(value, action)
+              setLoading(true)
+              onClick(value, action).finally(() => {
+                setLoading(false)
+              })
             }}>
             {action === 'farm' ? 'Farm' : 'Unfarm'}
           </Button>
@@ -225,7 +228,7 @@ const Farm: React.FunctionComponent = () => {
     <Expand
       action={action}
       onClick={(value, action) => {
-        erc20
+        return erc20
           .allowance(currentPool.address + '')
           .then((num) => {
             if (

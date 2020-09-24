@@ -11,7 +11,6 @@ const poolContext = React.createContext<{
   totalLocked: string // user total in pool
   allPoolLocked: string // all pools loockd
   perRewardBlock: string
-  loading: boolean
   stake(tokenAddress: string, amount: string): Promise<any>
   withdraw(tokenAddress: string, amount: string): Promise<any>
 }>({} as any)
@@ -25,7 +24,6 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
   const [totalLocked, setTotalLocked] = React.useState('0')
   const [allPoolLocked, setAllPoolLocked] = React.useState('0')
   const [perRewardBlock, setPerRewardBlock] = React.useState('0')
-  const [loading, setLoading] = React.useState(false)
 
   const initPool = () => {
     return new web3.eth.Contract(POOL_ABI, currentPool.address)
@@ -36,15 +34,9 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
       return Promise.resolve()
     }
     const pool = initPool()
-    setLoading(true)
-    return pool.methods
-      .stake(tokenAddress, amount)
-      .send({
-        from: account
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    return pool.methods.stake(tokenAddress, amount).send({
+      from: account
+    })
   }
 
   const withdraw = async (tokenAddress: string, amount: string): Promise<any> => {
@@ -52,15 +44,9 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
       return
     }
     const pool = initPool()
-    setLoading(true)
-    return pool.methods
-      .withdraw(tokenAddress, amount)
-      .send({
-        from: account
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    return pool.methods.withdraw(tokenAddress, amount).send({
+      from: account
+    })
   }
 
   const getTotal = React.useCallback(() => {
@@ -151,7 +137,6 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
         totalLocked,
         allPoolLocked,
         perRewardBlock,
-        loading,
         stake,
         withdraw
       }}>
@@ -167,7 +152,6 @@ const usePool = () => {
     totalLocked,
     allPoolLocked,
     perRewardBlock,
-    loading,
     stake,
     withdraw
   } = React.useContext(poolContext)
@@ -178,7 +162,6 @@ const usePool = () => {
     totalLocked,
     allPoolLocked,
     perRewardBlock,
-    loading,
     stake,
     withdraw
   }

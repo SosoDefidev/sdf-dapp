@@ -173,7 +173,7 @@ const Farm: React.FunctionComponent = () => {
     )
   }
 
-  const items = app.currentPool?.supportTokens.map((token) =>
+  const items = app.currentPool.supportTokens.map((token) =>
     combineOptions([
       {
         title: (
@@ -226,14 +226,14 @@ const Farm: React.FunctionComponent = () => {
       action={action}
       onClick={(value, action) => {
         erc20
-          .allowance(currentPool?.address + '')
+          .allowance(currentPool.address + '')
           .then((num) => {
             if (
               new BigNumber(num).isLessThan(
                 new BigNumber(value).multipliedBy(new BigNumber(web3.utils.toWei('1')))
               )
             ) {
-              return erc20.approve(account, maxValue)
+              return erc20.approve(currentPool.address, maxValue)
             }
           })
           .then(() => {
@@ -257,12 +257,12 @@ const Farm: React.FunctionComponent = () => {
       </TopPanelContainer>
       <div className="list">
         <List>
-          {items?.map((item, index) => (
+          {items.map((item, index) => (
             <List.Item
               data={item}
               key={index}
               renderExpand={
-                tokenAddress === app.currentPool?.supportTokens[index].address
+                tokenAddress === app.currentPool.supportTokens[index].address
                   ? renderExpand
                   : undefined
               }

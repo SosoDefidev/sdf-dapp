@@ -16,9 +16,10 @@ const PoolInfo: React.FunctionComponent = () => {
   const reward24h = new BigNumber((24 * 60 * 60) / 15).multipliedBy(
     new BigNumber(pool.perRewardBlock)
   )
-  const estimated24h = new BigNumber(pool.totalLocked)
-    .div(new BigNumber(pool.total))
-    .multipliedBy(reward24h)
+  const estimated24h =
+    Number(pool.total) > 0
+      ? new BigNumber(pool.totalLocked).div(new BigNumber(pool.total)).multipliedBy(reward24h)
+      : new BigNumber('0')
 
   return (
     <div className="container">

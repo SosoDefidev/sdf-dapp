@@ -1,7 +1,9 @@
-import { Button, Input } from 'antd'
+import { Button, Input, Typography } from 'antd'
 import BigNumber from 'bignumber.js'
 import React from 'react'
+import { useAsyncRetry } from 'react-use'
 
+import { TokenType } from '@/api'
 import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
 import { TopPanel, TopPanelContainer } from '@/components/TopPanel'
@@ -16,18 +18,30 @@ import PoolInfo from './PoolInfo'
 
 type ActionType = 'farm' | 'unfarm'
 
+const { Text } = Typography
+
 const Expand = ({
   action,
+  token,
   onClick,
   close
 }: {
   action: ActionType
+  token?: TokenType
   onClick: (value: string, action: ActionType) => Promise<any>
   close: () => void
 }) => {
   const theme = useTheme()
+  const { account, web3 } = useApp()
+
   const [value, setValue] = React.useState('')
   const [loading, setLoading] = React.useState(false)
+  const erc20 = useERC20(token?.address || '', account, web3)
+
+  const { value: tokenBalance } = useAsyncRetry(async () => {
+    const balanceWei = await erc20.balanceOf(account)
+    return web3.utils.fromWei(balanceWei ?? '0')
+  }, [account, erc20, web3])
 
   return (
     <>
@@ -39,6 +53,9 @@ const Expand = ({
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
+        <p style={{ textAlign: 'right' }}>
+          <Text type="secondary">My balance: {tokenBalance}</Text>
+        </p>
         <div className="submit">
           <Button
             type="primary"
@@ -121,11 +138,11 @@ const Expand = ({
 const Farm: React.FunctionComponent = () => {
   const theme = useTheme()
   const [action, setAction] = React.useState<ActionType>('farm')
-  const [tokenAddress, setTokenAddress] = React.useState('')
+  const [currentToken, setCurrentToken] = React.useState<TokenType>()
   const app = useApp()
   const { width } = useViewport()
   const { account, currentPool, maxValue, web3 } = useApp()
-  const erc20 = useERC20(tokenAddress, account, web3)
+  const erc20 = useERC20(currentToken?.address || '', account, web3)
   const pool = usePool()
 
   const options: DataType[] = [
@@ -201,7 +218,7 @@ const Farm: React.FunctionComponent = () => {
               type="link"
               onClick={() => {
                 setAction('farm')
-                setTokenAddress(token.address)
+                setCurrentToken(token)
               }}>
               Farm
             </Button>
@@ -209,7 +226,7 @@ const Farm: React.FunctionComponent = () => {
               type="text"
               onClick={() => {
                 setAction('unfarm')
-                setTokenAddress(token.address)
+                setCurrentToken(token)
               }}>
               Unfarm
             </Button>
@@ -227,6 +244,7 @@ const Farm: React.FunctionComponent = () => {
   const renderExpand = () => (
     <Expand
       action={action}
+      token={currentToken}
       onClick={(value, action) => {
         return erc20
           .allowance(currentPool.address + '')
@@ -241,13 +259,27 @@ const Farm: React.FunctionComponent = () => {
           })
           .then(() => {
             if (action === 'farm') {
-              return pool.stake(tokenAddress, web3.utils.toWei(value))
+              if (currentToken) {
+                return pool.stake(
+                  currentToken.address,
+                  new BigNumber(value)
+                    .multipliedBy(new BigNumber(10 ** currentToken.decimals))
+                    .toFixed(0)
+                )
+              }
             } else {
-              return pool.withdraw(tokenAddress, web3.utils.toWei(value))
+              if (currentToken) {
+                return pool.withdraw(
+                  currentToken.address || '',
+                  new BigNumber(value)
+                    .multipliedBy(new BigNumber(10 ** currentToken.decimals))
+                    .toFixed(0)
+                )
+              }
             }
           })
       }}
-      close={() => setTokenAddress('')}
+      close={() => setCurrentToken(undefined)}
     />
   )
 
@@ -265,7 +297,7 @@ const Farm: React.FunctionComponent = () => {
               data={item}
               key={index}
               renderExpand={
-                tokenAddress === app.currentPool.supportTokens[index].address
+                currentToken?.address === app.currentPool.supportTokens[index].address
                   ? renderExpand
                   : undefined
               }

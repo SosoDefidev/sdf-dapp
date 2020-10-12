@@ -36,7 +36,12 @@ const useERC20 = (erc20Address: string, account: string, web3: Web3) => {
       return erc20.methods.balanceOf(address).call()
     }
 
-    return { approve, allowance, totalSupply, balanceOf }
+    const decimals = async (): Promise<string> => {
+      const erc20 = new web3.eth.Contract(ERC20_ABI, erc20Address)
+      return erc20.methods.decimals().call()
+    }
+
+    return { approve, allowance, totalSupply, balanceOf, decimals }
   }, [erc20Address, account, web3])
 }
 

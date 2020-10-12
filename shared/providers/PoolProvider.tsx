@@ -18,6 +18,7 @@ const poolContext = React.createContext<{
   perRewardBlock: string
   stake(tokenAddress: string, amount: string): Promise<any>
   withdraw(tokenAddress: string, amount: string): Promise<any>
+  tokenLocked(tokenAddress: string): Promise<any> // get token locked
 }>({} as any)
 
 const PoolProvider: React.FunctionComponent = ({ children }) => {
@@ -129,6 +130,15 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
       })
   }, [account, web3])
 
+  const tokenLocked = async (tokenAddress: string): Promise<string> => {
+    if (!account) {
+      return '0'
+    }
+
+    const pool = initPool()
+    return pool.methods.balanceOf(tokenAddress, account).call()
+  }
+
   const getAllPoolLocked = React.useCallback(() => {
     Promise.all(
       pools.map((pool) => {
@@ -196,7 +206,8 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
         allPoolLocked,
         perRewardBlock,
         stake,
-        withdraw
+        withdraw,
+        tokenLocked
       }}>
       {loading && <Loading progress={progress} />}
       {children}

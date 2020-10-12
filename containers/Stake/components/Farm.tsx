@@ -4,6 +4,7 @@ import React from 'react'
 import { useAsyncRetry } from 'react-use'
 
 import { TokenType } from '@/api'
+import EnableButton from '@/components/Button/EnableButton'
 import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
 import { TopPanel, TopPanelContainer } from '@/components/TopPanel'
@@ -36,11 +37,13 @@ const Expand = ({
 
   const [value, setValue] = React.useState('')
   const [loading, setLoading] = React.useState(false)
-  const erc20 = useERC20(token?.address || '', account, web3)
+  const erc20 = useERC20(token?.address || '', account + '', web3)
 
   const { value: tokenBalance } = useAsyncRetry(async () => {
-    const balanceWei = await erc20.balanceOf(account)
-    return web3.utils.fromWei(balanceWei ?? '0')
+    const [balance, decimals] = await Promise.all([erc20.balanceOf(account + ''), erc20.decimals()])
+    return new BigNumber(balance ?? '0')
+      .div(new BigNumber(10 ** Number(decimals ?? '0')))
+      .toFixed(6)
   }, [account, erc20, web3])
 
   return (
@@ -57,7 +60,7 @@ const Expand = ({
           <Text type="secondary">My balance: {tokenBalance}</Text>
         </p>
         <div className="submit">
-          <Button
+          <EnableButton
             type="primary"
             size="large"
             loading={loading}
@@ -68,7 +71,7 @@ const Expand = ({
               })
             }}>
             {action === 'farm' ? 'Farm' : 'Unfarm'}
-          </Button>
+          </EnableButton>
           <Button size="large" onClick={close}>
             Close
           </Button>
@@ -142,7 +145,7 @@ const Farm: React.FunctionComponent = () => {
   const app = useApp()
   const { width } = useViewport()
   const { account, currentPool, maxValue, web3 } = useApp()
-  const erc20 = useERC20(currentToken?.address || '', account, web3)
+  const erc20 = useERC20(currentToken?.address || '', account + '', web3)
   const pool = usePool()
 
   const options: DataType[] = [
@@ -193,20 +196,34 @@ const Farm: React.FunctionComponent = () => {
     )
   }
 
+  const TokenLocked: React.FunctionComponent<{ token: TokenType }> = ({ token }) => {
+    const [locked, setLocked] = React.useState('0')
+
+    React.useEffect(() => {
+      pool.tokenLocked(token.address).then((data) => {
+        setLocked(data)
+      })
+    }, [token.address])
+
+    return (
+      <Items
+        title={
+          new BigNumber(locked).div(new BigNumber(10 ** token.decimals)).toFixed(6) + token.name
+        }
+        desc={token.name}
+      />
+    )
+  }
+
   const items = app.currentPool.supportTokens.map((token) =>
     combineOptions([
       {
-        title: (
-          <Items
-            title={new BigNumber(web3.utils.fromWei(pool.totalLocked)).toFixed(4) + 'USDT'}
-            desc={token.name}
-          />
-        )
+        title: <TokenLocked token={token} />
       },
       {
         title: (
           <Items
-            title={new BigNumber(web3.utils.fromWei(pool.reward)).toFixed(4) + 'SDF'}
+            title={new BigNumber(web3.utils.fromWei(pool.reward)).toFixed(6) + 'SDF'}
             desc="Currently Farming"
           />
         )

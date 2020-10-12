@@ -5,10 +5,11 @@ import Web3 from 'web3'
 import { getPools, PoolType } from '@/api'
 
 import { ERC20_ABI, POOL_ABI, RPC_URLS } from '../constants'
+import useCache from '../hooks/useCache'
 import useERC20 from '../hooks/useERC20'
 
 const appContext = React.createContext<{
-  account: string
+  account?: string
   balance: string
   currentPool: PoolType
   pools: PoolType[]
@@ -24,44 +25,67 @@ const appContext = React.createContext<{
 const AppProvider: React.FunctionComponent = ({ children }) => {
   const wallet = useWallet<any>()
 
-  const [account, setAccount] = React.useState('')
+  const [account, setAccount] = useCache<string>('account')
   const [balance, setBalance] = React.useState('')
+  const web3 = React.useMemo(() => {
+    if (wallet.ethereum) {
+      return new Web3(wallet.ethereum)
+    } else {
+      return new Web3(RPC_URLS[wallet.chainId + ''])
+    }
+  }, [wallet])
+  const erc20 = useERC20('0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14', account + '', web3)
 
   const [pools, setPools] = React.useState<PoolType[]>([])
   const [sdfPrice] = React.useState<string>('1')
   const [totalSupply, setTotalSupply] = React.useState<string>('0')
   const [circulating, setCirculating] = React.useState<string>('0')
   const [maxSupply] = React.useState<string>('1000000000000000000000000000')
+
   const [currentPool, setCurrentPool] = React.useState<PoolType>({
     name: 'Seed Pool',
     icon: 'https://robohash.org/USD',
-    address: '0xbebEc498e5Fa8b8356E106BDCce59622C4d08cdE',
+    address: '0x6bF5A42eCa19B0d47B7e3C66928EFd2cAB461C8C',
     abi: POOL_ABI,
     supportTokens: [
       {
         name: 'USDT',
         icon: 'https://robohash.org/USDT',
-        address: '0x2de8012e641802cc980bf85f5d1fc3364406ed3b',
+        address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        abi: ERC20_ABI,
+        decimals: 6
+      },
+      {
+        name: 'USDC',
+        icon: 'https://robohash.org/USDC',
+        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        abi: ERC20_ABI,
+        decimals: 6
+      },
+      {
+        name: 'TUSD',
+        icon: 'https://robohash.org/TUSD',
+        address: '0x0000000000085d4780B73119b644AE5ecd22b376',
+        abi: ERC20_ABI,
+        decimals: 18
+      },
+      {
+        name: 'DAI',
+        icon: 'https://robohash.org/DAI',
+        address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         abi: ERC20_ABI,
         decimals: 18
       }
     ]
   })
 
-  const [maxValue] = React.useState(
-    '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-  )
-  const web3 = React.useRef<Web3>(new Web3(RPC_URLS['4']))
-
-  const erc20 = useERC20('0x31Bd25Bd37341115a4aE0720d3Aae13E9f8C4358', account, web3.current)
-
   React.useEffect(() => {
-    if (wallet.status === 'connected') {
-      // init web3
-      setAccount(wallet.account + '')
+    if (wallet.ethereum) {
+      wallet.account && setAccount(wallet.account)
       setBalance(wallet.balance + '')
-      web3.current = new Web3(wallet.ethereum)
-      localStorage.setItem('address', wallet.account + '')
+    } else {
+      setAccount('')
+      setBalance('')
     }
   }, [wallet])
 
@@ -69,11 +93,6 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
     getPools().then((data) => {
       setPools(data)
     })
-
-    const account = localStorage.getItem('address')
-    if (account) {
-      wallet.connect('injected')
-    }
   }, [])
 
   React.useEffect(() => {
@@ -83,6 +102,12 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
     })
   }, [erc20])
 
+  React.useEffect(() => {
+    if (account) {
+      wallet.connect('injected')
+    }
+  }, [])
+
   return (
     <appContext.Provider
       value={{
@@ -90,9 +115,9 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
         balance,
         currentPool,
         pools,
-        maxValue,
+        maxValue: '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
         sdfPrice,
-        web3: web3.current,
+        web3,
         totalSupply,
         circulating,
         maxSupply,
@@ -104,34 +129,9 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
 }
 
 const useApp = () => {
-  const {
-    balance,
-    account,
-    currentPool,
-    pools,
-    maxValue,
-    web3,
-    sdfPrice,
-    totalSupply,
-    circulating,
-    maxSupply,
-    tooglePool
-  } = React.useContext(appContext)
+  const context = React.useContext(appContext)
 
-  return {
-    balance,
-    account,
-    currentPool,
-    pools,
-    maxValue,
-    web3,
-    sdfPrice,
-    totalSupply,
-    circulating,
-    maxSupply,
-    accountShort: account && account.slice(0, 6) + '...' + account.slice(-4),
-    tooglePool
-  }
+  return context
 }
 
 export { AppProvider, useApp }

@@ -3,12 +3,13 @@ import { useWallet } from 'use-wallet'
 
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
+import { shortenAddress } from '@/utils/string'
 
 import ActiveLink from '../ActiveLink'
 
 const Navbar: React.FunctionComponent = () => {
-  const { connect, status } = useWallet()
-  const { accountShort } = useApp()
+  const wallet = useWallet()
+  const { account } = useApp()
   const theme = useTheme()
 
   return (
@@ -26,12 +27,12 @@ const Navbar: React.FunctionComponent = () => {
           <div
             className="unlock"
             onClick={() => {
-              if (status === 'connected') return
+              if (account) return
 
-              connect('injected')
+              wallet.connect('injected')
             }}>
             <img src={require('@/assets/imgs/unlock-wallet.png')} alt="Unlock Wallet" />
-            {accountShort || 'Unlock Wallet'}
+            {shortenAddress(account) || 'Unlock Wallet'}
           </div>
         }
       </nav>

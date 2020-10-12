@@ -14,10 +14,10 @@ import { ViewportProvider } from '@/shared/providers/ViewportProvider'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <UseWalletProvider
-      chainId={4}
+      chainId={1}
       connectors={{
         walletconnect: {
-          rpcUrl: RPC_URLS['4']
+          rpcUrl: RPC_URLS['1']
         }
       }}>
       <AppProvider>

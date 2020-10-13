@@ -44,14 +44,14 @@ export const getPools = async () => {
           icon: 'https://robohash.org/TUSD',
           address: '0x0000000000085d4780B73119b644AE5ecd22b376',
           abi: ERC20_ABI,
-          decimals: 6
+          decimals: 18
         },
         {
           name: 'DAI',
           icon: 'https://robohash.org/DAI',
           address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
           abi: ERC20_ABI,
-          decimals: 6
+          decimals: 18
         }
       ]
     }

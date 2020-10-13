@@ -31,16 +31,16 @@ const Footer: React.FunctionComponent = () => {
             </Col>
             <Col span={6}>
               <div className="footer-item">
-                <Link href="https://www.etherscan.io">
+                <Link href="https://www.etherscan.io/token/0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14">
                   <a target="_blank" rel="noopener noreferrer">
                     Token Contract
                   </a>
                 </Link>
               </div>
               <div className="footer-item">
-                <Link href="https://app.uniswap.org">
+                <Link href="https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=0x62bfcc7748f7c1d660eb9537c8af778d8beb2b14">
                   <a target="_blank" rel="noopener noreferrer">
-                    Uniswap
+                    Uniswap(SDF/USDT)
                   </a>
                 </Link>
               </div>

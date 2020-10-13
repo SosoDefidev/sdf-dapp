@@ -4,6 +4,7 @@ import React from 'react'
 
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
+import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { usePool } from '@/shared/providers/PoolProvider'
 
 const { Text, Title } = Typography
@@ -12,6 +13,7 @@ const PoolInfo: React.FunctionComponent = () => {
   const theme = useTheme()
   const { web3 } = useApp()
   const pool = usePool()
+  const { t } = useLanguage()
 
   const reward24h = new BigNumber((24 * 60 * 60) / 15).multipliedBy(
     new BigNumber(pool.perRewardBlock)
@@ -25,11 +27,11 @@ const PoolInfo: React.FunctionComponent = () => {
     <div className="container">
       <div className="content">
         <div className="cell">
-          <Text type="secondary">Current Epoch Reward</Text>
+          <Text type="secondary">{t('stake.farm.currentReward')}</Text>
           <Title level={4}>{web3.utils.fromWei(pool.perRewardBlock)} SDF</Title>
         </div>
         <div className="cell">
-          <Text type="secondary">Your Estimated 24h Reward</Text>
+          <Text type="secondary">{t('stake.farm.reward24h')}</Text>
           <Title level={4}>
             {web3.utils.fromWei(estimated24h.isNaN() ? '0' : estimated24h.toFixed(0))} SDF
           </Title>

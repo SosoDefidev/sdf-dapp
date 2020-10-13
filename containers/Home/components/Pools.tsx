@@ -4,27 +4,12 @@ import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
+import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
 
-const Pools: React.FunctionComponent = () => {
+const Items = ({ label, value }: { label: React.ReactNode; value: string }) => {
   const theme = useTheme()
-  const { width } = useViewport()
-  const app = useApp()
-
-  const options: DataType[] = [
-    { width: width > 736 ? '20%' : '100%' },
-    { width: width > 736 ? '20%' : '100%' },
-    { width: width > 736 ? '20%' : '100%' },
-    { width: width > 736 ? '10%' : '100%' },
-    { width: width > 736 ? '10%' : '100%' },
-    { width: width > 736 ? '10%' : '100%' },
-    { width: width > 736 ? '10%' : '100%' }
-  ]
-
-  const combineOptions = (data: DataType[]): DataType[] =>
-    data.map((d, index) => ({ ...d, ...options[index] }))
-
-  const Items = ({ label, value }: { label: string; value: string }) => (
+  return (
     <>
       <div>
         <label>{label}</label>
@@ -62,12 +47,32 @@ const Pools: React.FunctionComponent = () => {
       `}</style>
     </>
   )
+}
+
+const Pools: React.FunctionComponent = () => {
+  const theme = useTheme()
+  const { width } = useViewport()
+  const app = useApp()
+  const { t } = useLanguage()
+
+  const options: DataType[] = [
+    { width: width > 736 ? '20%' : '100%' },
+    { width: width > 736 ? '20%' : '100%' },
+    { width: width > 736 ? '20%' : '100%' },
+    { width: width > 736 ? '10%' : '100%' },
+    { width: width > 736 ? '10%' : '100%' },
+    { width: width > 736 ? '10%' : '100%' },
+    { width: width > 736 ? '10%' : '100%' }
+  ]
+
+  const combineOptions = (data: DataType[]): DataType[] =>
+    data.map((d, index) => ({ ...d, ...options[index] }))
 
   const titles = combineOptions([
     {
       title: (
         <span>
-          Pool
+          {t('home.list.pool')}
           <style jsx>{`
             span {
               padding-left: 42px;
@@ -77,22 +82,22 @@ const Pools: React.FunctionComponent = () => {
       )
     },
     {
-      title: 'Staked'
+      title: t('home.list.staked')
     },
     {
-      title: 'Total Value Locked'
+      title: t('home.list.totalLock')
     },
     {
-      title: 'Hourly'
+      title: t('home.list.hourly')
     },
     {
-      title: 'Daily'
+      title: t('home.list.daily')
     },
     {
-      title: 'Weekly'
+      title: t('home.list.weekly')
     },
     {
-      title: 'APY'
+      title: t('home.list.apy')
     }
   ])
 
@@ -159,22 +164,22 @@ const Pools: React.FunctionComponent = () => {
         )
       },
       {
-        title: <Items label="Staked" value="12,345,654.67" />
+        title: <Items label={t('home.list.staked')} value="12,345,654.67" />
       },
       {
-        title: <Items label="Total Value Locked" value="$12,345,654.67" />
+        title: <Items label={t('home.list.totalLock')} value="$12,345,654.67" />
       },
       {
-        title: <Items label="Hourly" value="0.01%" />
+        title: <Items label={t('home.list.hourly')} value="0.01%" />
       },
       {
-        title: <Items label="Daily" value="1.2%" />
+        title: <Items label={t('home.list.daily')} value="1.2%" />
       },
       {
-        title: <Items label="Weekly" value="1.34%" />
+        title: <Items label={t('home.list.weekly')} value="1.34%" />
       },
       {
-        title: <Items label="APY" value="67.65%" />
+        title: <Items label={t('home.list.apy')} value="67.65%" />
       }
     ])
   )

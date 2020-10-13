@@ -3,6 +3,7 @@ import { useWallet } from 'use-wallet'
 
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
+import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { shortenAddress } from '@/utils/string'
 
 import ActiveLink from '../ActiveLink'
@@ -11,6 +12,7 @@ const Navbar: React.FunctionComponent = () => {
   const wallet = useWallet()
   const { account } = useApp()
   const theme = useTheme()
+  const { t } = useLanguage()
 
   return (
     <>
@@ -32,7 +34,7 @@ const Navbar: React.FunctionComponent = () => {
               wallet.connect('injected')
             }}>
             <img src={require('@/assets/imgs/unlock-wallet.png')} alt="Unlock Wallet" />
-            {shortenAddress(account) || 'Unlock Wallet'}
+            {shortenAddress(account) || t('common.unlock')}
           </div>
         }
       </nav>

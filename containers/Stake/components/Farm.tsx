@@ -8,6 +8,7 @@ import { DataType } from '@/components/List/Item'
 import { TopPanel, TopPanelContainer } from '@/components/TopPanel'
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
+import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { usePool } from '@/shared/providers/PoolProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
 
@@ -16,7 +17,7 @@ import PoolInfo from './PoolInfo'
 
 type ActionType = 'farm' | 'unfarm'
 
-const Items = ({ title, desc }: { title: string; desc: string }) => {
+const Items = ({ title, desc }: { title: string; desc: React.ReactNode }) => {
   const theme = useTheme()
 
   return (
@@ -87,6 +88,7 @@ const Farm: React.FunctionComponent = () => {
   const { width } = useViewport()
   const { web3 } = useApp()
   const pool = usePool()
+  const { t } = useLanguage()
 
   const options: DataType[] = [
     { width: width > 736 ? '35%' : '100%' },
@@ -109,7 +111,7 @@ const Farm: React.FunctionComponent = () => {
               new BigNumber(web3.utils.fromWei(pool.reward)).toFixed(6, BigNumber.ROUND_DOWN) +
               'SDF'
             }
-            desc="Currently Farming"
+            desc={t('stake.farm.currentFarming')}
           />
         )
       },
@@ -128,7 +130,7 @@ const Farm: React.FunctionComponent = () => {
                 setAction('farm')
                 setCurrentToken(token)
               }}>
-              Farm
+              {t('stake.farm.deposit')}
             </Button>
             <Button
               type="primary"
@@ -137,7 +139,7 @@ const Farm: React.FunctionComponent = () => {
                 setAction('unfarm')
                 setCurrentToken(token)
               }}>
-              Unfarm
+              {t('stake.farm.withdraw')}
             </Button>
           </Space>
         )

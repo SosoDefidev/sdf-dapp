@@ -3,19 +3,21 @@ import React from 'react'
 
 import { TopPanel, TopPanelContainer } from '@/components/TopPanel'
 import { useApp } from '@/shared/providers/AppProvider'
+import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { usePool } from '@/shared/providers/PoolProvider'
 
 const { Text, Title } = Typography
 
 const TokenInfo: React.FunctionComponent = () => {
   const { totalSupply, maxSupply, circulating, web3 } = useApp()
+  const { t } = useLanguage()
 
   return (
     <table>
       <tbody>
         <tr>
           <td>
-            <Text type="secondary">Circulating</Text>
+            <Text type="secondary">{t('home.circulating')}</Text>
           </td>
           <td>
             <Text>{web3.utils.fromWei(circulating)} SDF</Text>
@@ -23,7 +25,7 @@ const TokenInfo: React.FunctionComponent = () => {
         </tr>
         <tr>
           <td>
-            <Text type="secondary">Current Total Supply</Text>
+            <Text type="secondary">{t('home.currentSupply')}</Text>
           </td>
           <td>
             <Text>{web3.utils.fromWei(totalSupply)} SDF</Text>
@@ -31,7 +33,7 @@ const TokenInfo: React.FunctionComponent = () => {
         </tr>
         <tr>
           <td>
-            <Text type="secondary">Max Supply</Text>
+            <Text type="secondary">{t('home.maxSupply')}</Text>
           </td>
           <td>
             <Text>{web3.utils.fromWei(maxSupply)} SDF</Text>
@@ -57,20 +59,20 @@ const TokenInfo: React.FunctionComponent = () => {
 }
 
 const Info: React.FunctionComponent = () => {
-  const app = useApp()
+  const { web3, sdfPrice } = useApp()
   const pool = usePool()
-  const { web3 } = app
+  const { t } = useLanguage()
 
   return (
     <div>
       <TopPanelContainer>
         <TopPanel type="primary">
           <Title level={3}>${web3.utils.fromWei(pool.allPoolLocked)}</Title>
-          <Text type="secondary">Total Value Locked(USD)</Text>
+          <Text type="secondary">{t('home.totalLock')}(USD)</Text>
         </TopPanel>
         <TopPanel>
-          <Title level={3}>${app.sdfPrice}</Title>
-          <Text type="secondary">SDF Price(USD)</Text>
+          <Title level={3}>${sdfPrice}</Title>
+          <Text type="secondary">{t('home.sdfPrice')}(USD)</Text>
         </TopPanel>
         <TopPanel>
           <TokenInfo />

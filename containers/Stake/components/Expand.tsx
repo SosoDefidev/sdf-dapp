@@ -9,6 +9,7 @@ import USDTSvg from '@/icons/USDT.svg'
 import useERC20 from '@/shared/hooks/useERC20'
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
+import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { usePending } from '@/shared/providers/PendingProvider'
 import { usePool } from '@/shared/providers/PoolProvider'
 
@@ -29,6 +30,7 @@ const Expand = ({
   const { account, currentPool, maxValue, web3 } = useApp()
   const pool = usePool()
   const pending = usePending()
+  const { t } = useLanguage()
 
   const [value, setValue] = React.useState('')
   const erc20 = useERC20(token?.address || '', account + '', web3)
@@ -51,7 +53,9 @@ const Expand = ({
           onChange={(e) => setValue(e.target.value)}
         />
         <p style={{ textAlign: 'right' }}>
-          <Text type="secondary">My balance: {tokenBalance}</Text>
+          <Text type="secondary">
+            {t('stake.farm.balance')}: {tokenBalance}
+          </Text>
         </p>
         <div className="submit">
           <EnableButton
@@ -98,10 +102,10 @@ const Expand = ({
                 )
               }
             }}>
-            {action === 'farm' ? 'Farm' : 'Unfarm'}
+            {action === 'farm' ? t('stake.farm.deposit') : t('stake.farm.withdraw')}
           </EnableButton>
           <Button size="large" onClick={close}>
-            Close
+            {t('stake.farm.close')}
           </Button>
         </div>
       </div>

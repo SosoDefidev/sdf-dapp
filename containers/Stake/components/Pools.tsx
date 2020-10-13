@@ -9,6 +9,7 @@ import { DataType } from '@/components/List/Item'
 import { SCAN_URL } from '@/shared/constants'
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
+import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
 import { shortenAddress } from '@/utils/string'
 const { Title } = Typography
@@ -34,6 +35,7 @@ const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ on
   const { width } = useViewport()
   const wallet = useWallet()
   const { pools } = useApp()
+  const { t } = useLanguage()
 
   const options: DataType[] = [
     { width: width > 736 ? '40%' : '100%' },
@@ -58,7 +60,7 @@ const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ on
       )
     },
     {
-      title: 'Contract'
+      title: t('stake.pool.contract')
     },
     {
       title: ''
@@ -151,7 +153,7 @@ const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ on
           <Items>
             <>
               <Button shape="round" onClick={() => onSelect(pool)}>
-                Farm <ArrowRightOutlined />
+                {t('stake.pool.farm')} <ArrowRightOutlined />
               </Button>
               <style jsx global>{`
                 .ant-btn.ant-btn-round {
@@ -171,7 +173,7 @@ const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ on
   return (
     <>
       <div className="title">
-        <Title level={3}>Select a farm to stake</Title>
+        <Title level={3}>{t('stake.pool.title')}</Title>
       </div>
       <List>
         {width > 736 && <List.Item data={titles} />}

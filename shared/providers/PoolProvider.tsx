@@ -152,7 +152,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
           .reduce((l, r) => {
             return l.plus(r)
           })
-        setAllPoolLocked(sum.toFixed(0))
+        setAllPoolLocked(sum.toFixed(0, BigNumber.ROUND_DOWN))
       } else {
         setAllPoolLocked('0')
       }

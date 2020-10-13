@@ -43,7 +43,7 @@ const Expand = ({
     const [balance, decimals] = await Promise.all([erc20.balanceOf(account + ''), erc20.decimals()])
     return new BigNumber(balance ?? '0')
       .div(new BigNumber(10 ** Number(decimals ?? '0')))
-      .toFixed(6)
+      .toFixed(6, BigNumber.ROUND_DOWN)
   }, [account, erc20, web3])
 
   return (
@@ -208,7 +208,9 @@ const Farm: React.FunctionComponent = () => {
     return (
       <Items
         title={
-          new BigNumber(locked).div(new BigNumber(10 ** token.decimals)).toFixed(6) + token.name
+          new BigNumber(locked)
+            .div(new BigNumber(10 ** token.decimals))
+            .toFixed(6, BigNumber.ROUND_DOWN) + token.name
         }
         desc={token.name}
       />
@@ -223,7 +225,10 @@ const Farm: React.FunctionComponent = () => {
       {
         title: (
           <Items
-            title={new BigNumber(web3.utils.fromWei(pool.reward)).toFixed(6) + 'SDF'}
+            title={
+              new BigNumber(web3.utils.fromWei(pool.reward)).toFixed(6, BigNumber.ROUND_DOWN) +
+              'SDF'
+            }
             desc="Currently Farming"
           />
         )

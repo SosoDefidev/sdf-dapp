@@ -267,39 +267,37 @@ const Farm: React.FunctionComponent = () => {
     <Expand
       action={action}
       token={currentToken}
-      onClick={(value, action) => {
-        return erc20
-          .allowance(currentPool.address + '')
-          .then((num) => {
-            if (
-              new BigNumber(num).isLessThan(
-                new BigNumber(value).multipliedBy(new BigNumber(web3.utils.toWei('1')))
+      onClick={async (value, action) => {
+        if (!currentToken) {
+          return
+        }
+
+        if (action === 'farm') {
+          return erc20
+            .allowance(currentPool.address + '')
+            .then((num) => {
+              if (
+                new BigNumber(num).isLessThan(
+                  new BigNumber(value).multipliedBy(new BigNumber(web3.utils.toWei('1')))
+                )
+              ) {
+                return erc20.approve(currentPool.address, maxValue)
+              }
+            })
+            .then(() => {
+              return pool.stake(
+                currentToken.address,
+                new BigNumber(value)
+                  .multipliedBy(new BigNumber(10 ** currentToken.decimals))
+                  .toFixed(0)
               )
-            ) {
-              return erc20.approve(currentPool.address, maxValue)
-            }
-          })
-          .then(() => {
-            if (action === 'farm') {
-              if (currentToken) {
-                return pool.stake(
-                  currentToken.address,
-                  new BigNumber(value)
-                    .multipliedBy(new BigNumber(10 ** currentToken.decimals))
-                    .toFixed(0)
-                )
-              }
-            } else {
-              if (currentToken) {
-                return pool.withdraw(
-                  currentToken.address || '',
-                  new BigNumber(value)
-                    .multipliedBy(new BigNumber(10 ** currentToken.decimals))
-                    .toFixed(0)
-                )
-              }
-            }
-          })
+            })
+        } else {
+          return pool.withdraw(
+            currentToken.address || '',
+            new BigNumber(value).multipliedBy(new BigNumber(10 ** currentToken.decimals)).toFixed(0)
+          )
+        }
       }}
       close={() => setCurrentToken(undefined)}
     />

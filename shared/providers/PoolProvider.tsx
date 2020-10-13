@@ -165,7 +165,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
     }
     const pool = initPool()
     return pool.methods
-      .pendingReward('0x155ccb3f4441009df94b868db91bd1b58e44e4f4')
+      .pendingReward(account)
       .call()
       .then((data: string) => {
         setReward(data)

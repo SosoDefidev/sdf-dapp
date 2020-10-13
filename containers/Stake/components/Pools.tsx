@@ -13,6 +13,22 @@ import { useViewport } from '@/shared/providers/ViewportProvider'
 import { shortenAddress } from '@/utils/string'
 const { Title } = Typography
 
+const Items: React.FunctionComponent = ({ children }) => (
+  <>
+    <div>{children}</div>
+    <style jsx>{`
+      div {
+      }
+
+      @media screen and (max-width: 736px) {
+        div {
+          margin-top: 20px;
+        }
+      }
+    `}</style>
+  </>
+)
+
 const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ onSelect }) => {
   const theme = useTheme()
   const { width } = useViewport()
@@ -24,22 +40,6 @@ const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ on
     { width: width > 736 ? '40%' : '100%' },
     { width: width > 736 ? '20%' : '100%' }
   ]
-
-  const Items: React.FunctionComponent = ({ children }) => (
-    <>
-      <div>{children}</div>
-      <style jsx>{`
-        div {
-        }
-
-        @media screen and (max-width: 736px) {
-          div {
-            margin-top: 20px;
-          }
-        }
-      `}</style>
-    </>
-  )
 
   const combineOptions = (data: DataType[]): DataType[] =>
     data.map((d, index) => ({ ...d, ...options[index] }))

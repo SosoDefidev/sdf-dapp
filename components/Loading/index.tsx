@@ -4,11 +4,13 @@ import { useInterval } from 'react-use'
 
 interface Props {
   progress: number
+  text?: string
+  error?: boolean
 }
 
 const { Title } = Typography
 
-const Loading: React.FunctionComponent<Props> = ({ progress }) => {
+const Loading: React.FunctionComponent<Props> = ({ progress, text, error }) => {
   const [percent, setPercent] = React.useState(0)
 
   useInterval(
@@ -33,8 +35,8 @@ const Loading: React.FunctionComponent<Props> = ({ progress }) => {
       closable={false}
       width={300}
       bodyStyle={{ textAlign: 'center' }}>
-      <Title level={3}>Transaction pending</Title>
-      <Progress percent={percent} type="circle" />
+      <Title level={3}>{text ?? 'Pending...'}</Title>
+      <Progress percent={percent} type="circle" status={error ? 'exception' : 'success'} />
     </Modal>
   )
 }

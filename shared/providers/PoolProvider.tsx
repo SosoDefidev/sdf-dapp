@@ -1,14 +1,12 @@
-import { notification } from 'antd'
-import Modal from 'antd/lib/modal/Modal'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useWallet } from 'use-wallet'
 
-import Loading from '@/components/Loading'
 import { delay } from '@/utils'
 
 import { POOL_ABI } from '../constants'
 import { useApp } from './AppProvider'
+import { usePending } from './PendingProvider'
 
 const poolContext = React.createContext<{
   reward: string
@@ -24,14 +22,13 @@ const poolContext = React.createContext<{
 const PoolProvider: React.FunctionComponent = ({ children }) => {
   const wallet = useWallet()
   const { account, web3, currentPool, pools } = useApp()
+  const pending = usePending()
 
   const [reward, setReward] = React.useState('0')
   const [total, setTotal] = React.useState('0')
   const [totalLocked, setTotalLocked] = React.useState('0')
   const [allPoolLocked, setAllPoolLocked] = React.useState('0')
   const [perRewardBlock, setPerRewardBlock] = React.useState('0')
-  const [loading, setLoading] = React.useState(false)
-  const [progress, setProgress] = React.useState(0)
 
   const currentWeb3 = React.useRef(web3)
   React.useEffect(() => {
@@ -43,13 +40,13 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
   }
 
   const stake = async (tokenAddress: string, amount: string): Promise<any> => {
+    pending.show('Staking pending')
+
     if (wallet.status !== 'connected') {
       await wallet.connect('injected')
       await delay(100)
     }
 
-    setProgress(0)
-    setLoading(true)
     const pool = initPool()
 
     return pool.methods
@@ -58,31 +55,21 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
         from: (await currentWeb3.current.eth.getAccounts())[0]
       })
       .then(() => {
-        notification.success({
-          message: 'Stake success'
-        })
+        pending.success('Stake success')
       })
       .catch(() => {
-        notification.error({
-          message: 'Stake failed'
-        })
-      })
-      .finally(() => {
-        setProgress(100)
-        setTimeout(() => {
-          setLoading(false)
-        }, 500)
+        pending.fail('Stake failed')
       })
   }
 
   const withdraw = async (tokenAddress: string, amount: string): Promise<any> => {
+    pending.show('Withdraw pending')
+
     if (wallet.status !== 'connected') {
       await wallet.connect('injected')
       await delay(100)
     }
 
-    setProgress(0)
-    setLoading(true)
     const pool = initPool()
 
     return pool.methods
@@ -91,20 +78,10 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
         from: (await currentWeb3.current.eth.getAccounts())[0]
       })
       .then(() => {
-        notification.success({
-          message: 'Withdraw success'
-        })
+        pending.success('Withdraw success')
       })
       .catch(() => {
-        notification.error({
-          message: 'Withdraw failed'
-        })
-      })
-      .finally(() => {
-        setProgress(100)
-        setTimeout(() => {
-          setLoading(false)
-        }, 500)
+        pending.fail('Withdraw failed')
       })
   }
 
@@ -209,7 +186,6 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
         withdraw,
         tokenLocked
       }}>
-      {loading && <Loading progress={progress} />}
       {children}
     </poolContext.Provider>
   )

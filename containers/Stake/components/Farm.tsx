@@ -1,140 +1,81 @@
-import { Button, Input, Typography } from 'antd'
+import { Button, Space } from 'antd'
 import BigNumber from 'bignumber.js'
 import React from 'react'
-import { useAsyncRetry } from 'react-use'
 
 import { TokenType } from '@/api'
-import EnableButton from '@/components/Button/EnableButton'
 import List from '@/components/List'
 import { DataType } from '@/components/List/Item'
 import { TopPanel, TopPanelContainer } from '@/components/TopPanel'
-import USDTSvg from '@/icons/USDT.svg'
-import useERC20 from '@/shared/hooks/useERC20'
 import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
 import { usePool } from '@/shared/providers/PoolProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
 
+import Expand from './Expand'
 import PoolInfo from './PoolInfo'
 
 type ActionType = 'farm' | 'unfarm'
 
-const { Text } = Typography
-
-const Expand = ({
-  action,
-  token,
-  onClick,
-  close
-}: {
-  action: ActionType
-  token?: TokenType
-  onClick: (value: string, action: ActionType) => Promise<any>
-  close: () => void
-}) => {
+const Items = ({ title, desc }: { title: string; desc: string }) => {
   const theme = useTheme()
-  const { account, web3 } = useApp()
-
-  const [value, setValue] = React.useState('')
-  const [loading, setLoading] = React.useState(false)
-  const erc20 = useERC20(token?.address || '', account + '', web3)
-
-  const { value: tokenBalance } = useAsyncRetry(async () => {
-    const [balance, decimals] = await Promise.all([erc20.balanceOf(account + ''), erc20.decimals()])
-    return new BigNumber(balance ?? '0')
-      .div(new BigNumber(10 ** Number(decimals ?? '0')))
-      .toFixed(6, BigNumber.ROUND_DOWN)
-  }, [account, erc20, web3])
 
   return (
     <>
-      <div className="container">
-        <Input
-          prefix={<USDTSvg width={22} height={22} />}
-          suffix="USDT"
-          placeholder="0.00"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        <p style={{ textAlign: 'right' }}>
-          <Text type="secondary">My balance: {tokenBalance}</Text>
-        </p>
-        <div className="submit">
-          <EnableButton
-            type="primary"
-            size="large"
-            loading={loading}
-            onClick={() => {
-              setLoading(true)
-              onClick(value, action).finally(() => {
-                setLoading(false)
-              })
-            }}>
-            {action === 'farm' ? 'Farm' : 'Unfarm'}
-          </EnableButton>
-          <Button size="large" onClick={close}>
-            Close
-          </Button>
-        </div>
+      <div className="text">
+        <h6>{title}</h6>
+        <p>{desc}</p>
       </div>
       <style jsx>{`
-        .container {
-          padding: 6px;
+        .text h6 {
+          margin: 0;
+          color: ${theme['@text-color']};
+          font-size: 14px;
+          line-height: 20px;
         }
-
-        .container :global(.ant-btn) {
-          width: 40%;
-          border-radius: 8px;
-          background-color: transparent;
-        }
-        .container :global(.ant-btn-primary) {
-          background-color: #fddb93;
-          border-color: #fddb93;
-          color: ${theme['@primary-color']};
-        }
-
-        .submit {
-          display: flex;
-          justify-content: space-around;
-          align-items: center;
-          margin-top: 30px;
+        .text p {
+          margin: 0;
+          color: ${theme['@text-color-secondary']};
+          font-size: 12px;
+          line-height: 20px;
         }
 
         @media screen and (max-width: 736px) {
-          .container :global(.ant-btn) {
-            width: 100%;
-            margin-top: 20px;
+          .text {
+            margin-bottom: 16px;
           }
-          .submit {
-            flex-direction: column;
+          .text h6 {
+            font-size: 16px;
+            line-height: 26px;
           }
-        }
-      `}</style>
-      <style jsx global>{`
-        .ant-input-affix-wrapper,
-        .ant-input-affix-wrapper:hover,
-        .ant-input-affix-wrapper-focusd {
-          padding: 8px 0;
-          background-color: transparent;
-          border-color: transparent;
-          box-shadow: none;
-          border-bottom-color: #c5c5c5;
-        }
-        .ant-input-affix-wrapper input {
-          background-color: transparent;
-        }
-        .ant-input-affix-wrapper:hover,
-        .ant-input-affix-wrapper-focusd {
-          border-bottom-color: ${theme['@primary-color']};
-        }
-        .ant-input-prefix {
-          margin-right: 12px;
-        }
-        .ant-input-suffix {
-          margin-left: 12px;
+          .text p {
+            font-size: 12px;
+            line-height: 26px;
+          }
         }
       `}</style>
     </>
+  )
+}
+
+const TokenLocked: React.FunctionComponent<{ token: TokenType }> = ({ token }) => {
+  const [locked, setLocked] = React.useState('0')
+  const pool = usePool()
+
+  React.useEffect(() => {
+    pool.tokenLocked(token.address).then((data) => {
+      setLocked(data)
+    })
+  }, [token.address])
+
+  return (
+    <Items
+      title={
+        new BigNumber(locked)
+          .div(new BigNumber(10 ** token.decimals))
+          .toFixed(6, BigNumber.ROUND_DOWN) + token.name
+      }
+      desc={token.name}
+    />
   )
 }
 
@@ -144,8 +85,7 @@ const Farm: React.FunctionComponent = () => {
   const [currentToken, setCurrentToken] = React.useState<TokenType>()
   const app = useApp()
   const { width } = useViewport()
-  const { account, currentPool, maxValue, web3 } = useApp()
-  const erc20 = useERC20(currentToken?.address || '', account + '', web3)
+  const { web3 } = useApp()
   const pool = usePool()
 
   const options: DataType[] = [
@@ -156,66 +96,6 @@ const Farm: React.FunctionComponent = () => {
 
   const combineOptions = (data: DataType[]): DataType[] =>
     data.map((d, index) => ({ ...d, ...options[index] }))
-
-  const Items = ({ title, desc }: { title: string; desc: string }) => {
-    return (
-      <>
-        <div className="text">
-          <h6>{title}</h6>
-          <p>{desc}</p>
-        </div>
-        <style jsx>{`
-          .text h6 {
-            margin: 0;
-            color: ${theme['@text-color']};
-            font-size: 14px;
-            line-height: 20px;
-          }
-          .text p {
-            margin: 0;
-            color: ${theme['@text-color-secondary']};
-            font-size: 12px;
-            line-height: 20px;
-          }
-
-          @media screen and (max-width: 736px) {
-            .text {
-              margin-bottom: 16px;
-            }
-            .text h6 {
-              font-size: 16px;
-              line-height: 26px;
-            }
-            .text p {
-              font-size: 12px;
-              line-height: 26px;
-            }
-          }
-        `}</style>
-      </>
-    )
-  }
-
-  const TokenLocked: React.FunctionComponent<{ token: TokenType }> = ({ token }) => {
-    const [locked, setLocked] = React.useState('0')
-
-    React.useEffect(() => {
-      pool.tokenLocked(token.address).then((data) => {
-        setLocked(data)
-      })
-    }, [token.address])
-
-    return (
-      <Items
-        title={
-          new BigNumber(locked)
-            .div(new BigNumber(10 ** token.decimals))
-            .toFixed(6, BigNumber.ROUND_DOWN) + token.name
-        }
-        desc={token.name}
-      />
-    )
-  }
 
   const items = app.currentPool.supportTokens.map((token) =>
     combineOptions([
@@ -235,9 +115,15 @@ const Farm: React.FunctionComponent = () => {
       },
       {
         title: (
-          <div>
+          <Space style={{ float: 'right' }}>
             <Button
-              type="link"
+              style={{
+                backgroundColor: '#fddb93',
+                borderColor: '#fddb93',
+                color: theme['@primary-color']
+              }}
+              type="primary"
+              size="small"
               onClick={() => {
                 setAction('farm')
                 setCurrentToken(token)
@@ -245,62 +131,22 @@ const Farm: React.FunctionComponent = () => {
               Farm
             </Button>
             <Button
-              type="text"
+              type="primary"
+              size="small"
               onClick={() => {
                 setAction('unfarm')
                 setCurrentToken(token)
               }}>
               Unfarm
             </Button>
-            <style jsx>{`
-              div {
-                text-align: right;
-              }
-            `}</style>
-          </div>
+          </Space>
         )
       }
     ])
   )
 
   const renderExpand = () => (
-    <Expand
-      action={action}
-      token={currentToken}
-      onClick={async (value, action) => {
-        if (!currentToken) {
-          return
-        }
-
-        if (action === 'farm') {
-          return erc20
-            .allowance(currentPool.address + '')
-            .then((num) => {
-              if (
-                new BigNumber(num).isLessThan(
-                  new BigNumber(value).multipliedBy(new BigNumber(1 ** currentToken.decimals))
-                )
-              ) {
-                return erc20.approve(currentPool.address, maxValue)
-              }
-            })
-            .then(() => {
-              return pool.stake(
-                currentToken.address,
-                new BigNumber(value)
-                  .multipliedBy(new BigNumber(10 ** currentToken.decimals))
-                  .toFixed(0)
-              )
-            })
-        } else {
-          return pool.withdraw(
-            currentToken.address || '',
-            new BigNumber(value).multipliedBy(new BigNumber(10 ** currentToken.decimals)).toFixed(0)
-          )
-        }
-      }}
-      close={() => setCurrentToken(undefined)}
-    />
+    <Expand action={action} token={currentToken} close={() => setCurrentToken(undefined)} />
   )
 
   return (

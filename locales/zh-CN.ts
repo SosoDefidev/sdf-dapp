@@ -1,4 +1,8 @@
 export default {
+  header: {
+    home: '首页',
+    stake: '挖矿'
+  },
   home: {
     totalLock: '锁定总量',
     sdfPrice: 'SDF 价格',
@@ -9,15 +13,15 @@ export default {
       pool: 'Pool',
       staked: '已质押',
       totalLock: '锁定总量',
-      hourly: 'Hourly',
-      daily: 'Daily',
-      weekly: 'Weekly',
-      apy: '年化'
+      hourly: '小时收益率',
+      daily: '日收益率',
+      weekly: '周收益率',
+      apy: '年化收益率'
     }
   },
   stake: {
     pool: {
-      title: 'Select a pool to stake',
+      title: '选择一个池',
       contract: 'Contract',
       farm: '挖矿'
     },

@@ -31,14 +31,14 @@ const TokenInfo: React.FunctionComponent = () => {
             <Text>{web3.utils.fromWei(totalSupply)} SDF</Text>
           </td>
         </tr>
-        <tr>
+        {/* <tr>
           <td>
             <Text type="secondary">{t('home.maxSupply')}</Text>
           </td>
           <td>
             <Text>{web3.utils.fromWei(maxSupply)} SDF</Text>
           </td>
-        </tr>
+        </tr> */}
       </tbody>
       <style jsx>{`
         table tr td {

@@ -1,4 +1,8 @@
 export default {
+  header: {
+    home: 'Home',
+    stake: 'Stake'
+  },
   home: {
     totalLock: 'Total Value Locked',
     sdfPrice: 'SDF Price',

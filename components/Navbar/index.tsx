@@ -19,10 +19,10 @@ const Navbar: React.FunctionComponent = () => {
       <nav>
         <div className="links">
           <ActiveLink href="/">
-            <a>Home</a>
+            <a>{t('header.home')}</a>
           </ActiveLink>
           <ActiveLink href="/stake">
-            <a>Stake</a>
+            <a>{t('header.stake')}</a>
           </ActiveLink>
         </div>
         {

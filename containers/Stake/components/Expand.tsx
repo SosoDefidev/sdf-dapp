@@ -3,12 +3,11 @@ import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useAsyncRetry } from 'react-use'
 
-import { TokenType } from '@/api'
 import EnableButton from '@/components/Button/EnableButton'
 import USDTSvg from '@/icons/USDT.svg'
 import useERC20 from '@/shared/hooks/useERC20'
 import useTheme from '@/shared/hooks/useTheme'
-import { useApp } from '@/shared/providers/AppProvider'
+import { TokenType, useApp } from '@/shared/providers/AppProvider'
 import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { usePending } from '@/shared/providers/PendingProvider'
 import { usePool } from '@/shared/providers/PoolProvider'
@@ -47,7 +46,7 @@ const Expand = ({
       <div className="container">
         <Input
           prefix={<USDTSvg width={22} height={22} />}
-          suffix="USDT"
+          suffix={currentPool.name}
           placeholder="0.00"
           value={value}
           onChange={(e) => setValue(e.target.value)}

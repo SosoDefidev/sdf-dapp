@@ -21,7 +21,6 @@ const LanguageProvider: React.FunctionComponent<{ defaultLang?: LangType }> = ({
   children,
   defaultLang = 'zh-CN'
 }) => {
-  console.log(defaultLang)
   const [lang, setLang] = React.useState<LangType>(defaultLang)
   const supportLang: SupportType = {
     'zh-CN': {

@@ -78,6 +78,7 @@ const Footer: React.FunctionComponent = () => {
         }
 
         .footer-item a {
+          white-space: nowrap;
           color: ${theme['@text-color-secondary']};
         }
 

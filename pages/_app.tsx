@@ -62,7 +62,6 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
       acceptLanguages.push('en-US')
     }
   })
-  console.log(acceptLanguages)
 
   return {
     ...appProps,

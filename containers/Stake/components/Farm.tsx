@@ -278,7 +278,7 @@ const Farm: React.FunctionComponent = () => {
             .then((num) => {
               if (
                 new BigNumber(num).isLessThan(
-                  new BigNumber(value).multipliedBy(new BigNumber(web3.utils.toWei('1')))
+                  new BigNumber(value).multipliedBy(new BigNumber(1 ** currentToken.decimals))
                 )
               ) {
                 return erc20.approve(currentPool.address, maxValue)

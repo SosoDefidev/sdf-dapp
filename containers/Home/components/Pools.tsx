@@ -1,3 +1,4 @@
+import { Tag } from 'antd'
 import React from 'react'
 
 import List from '@/components/List'
@@ -7,7 +8,7 @@ import { useApp } from '@/shared/providers/AppProvider'
 import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
 
-const Items = ({ label, value }: { label: React.ReactNode; value: string }) => {
+const Items = ({ label, value }: { label: React.ReactNode; value: React.ReactNode }) => {
   const theme = useTheme()
 
   return (
@@ -168,7 +169,11 @@ const Pools: React.FunctionComponent = () => {
         title: (
           <Items
             label={t('home.list.rewardPerBlock')}
-            value={web3.utils.fromWei(pool.rewardPerBlock)}
+            value={
+              <Tag color="magenta" style={{ margin: 0 }}>
+                {web3.utils.fromWei(pool.rewardPerBlock)}SDF
+              </Tag>
+            }
           />
         )
       },

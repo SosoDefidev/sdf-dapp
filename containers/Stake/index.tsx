@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import React from 'react'
 
 import useTheme from '@/shared/hooks/useTheme'
@@ -8,9 +9,25 @@ import Pools from './components/Pools'
 
 const Stake: React.FunctionComponent = () => {
   const theme = useTheme()
-  const app = useApp()
+  const { tooglePool, pools } = useApp()
+  const router = useRouter()
 
   const [poolVisible, setPoolVisible] = React.useState<any>(null)
+
+  React.useEffect(() => {
+    const { pool: poolAddress } = router.query
+
+    if (!poolAddress) {
+      return
+    }
+
+    pools.forEach((pool) => {
+      if (pool.address === poolAddress) {
+        tooglePool(pool)
+        setPoolVisible(true)
+      }
+    })
+  }, [router.query, pools])
 
   return (
     <>
@@ -21,7 +38,7 @@ const Stake: React.FunctionComponent = () => {
           ) : (
             <Pools
               onSelect={(pool) => {
-                app.tooglePool(pool)
+                tooglePool(pool)
                 setPoolVisible(true)
               }}
             />

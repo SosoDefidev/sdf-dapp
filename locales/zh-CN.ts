@@ -7,11 +7,10 @@ export default {
     totalLock: '锁定总量',
     sdfPrice: 'SDF 价格',
     circulating: '流通量',
-    currentSupply: '当前供应量',
+    currentSupply: '当前供应总量',
     maxSupply: '最大供应量',
     list: {
       pool: 'Pool',
-      staked: '已质押',
       totalLock: '锁定总量',
       rewardPerBlock: '奖励数量 / 区块',
       hourly: '小时收益率',

@@ -1,4 +1,5 @@
 import { Tag } from 'antd'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 import List from '@/components/List'
@@ -56,6 +57,7 @@ const Pools: React.FunctionComponent = () => {
   const { pools, web3 } = useApp()
   const { width } = useViewport()
   const { t } = useLanguage()
+  const router = useRouter()
 
   const options: DataType[] = [
     { width: width > 736 ? '20%' : '100%' },
@@ -107,7 +109,10 @@ const Pools: React.FunctionComponent = () => {
     combineOptions([
       {
         title: (
-          <span>
+          <span
+            onClick={() => {
+              router.push(`/stake?pool=${pool.address}`)
+            }}>
             <div className="logo" />
             <div className="text">
               <h6>{pool.name}</h6>

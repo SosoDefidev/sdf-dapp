@@ -12,7 +12,6 @@ export default {
     rewardPerBlock: 'Reward / Block',
     list: {
       pool: 'Pool',
-      staked: 'Staked',
       totalLock: 'Total Value Locked',
       hourly: 'Hourly',
       daily: 'Daily',

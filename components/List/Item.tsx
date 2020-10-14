@@ -8,12 +8,13 @@ export type DataType = {
 export type Props = {
   data: DataType[]
   renderExpand?: () => React.ReactNode
+  onClick?: () => void
 }
 
-const Item: React.FunctionComponent<Props> = ({ data, renderExpand }) => {
+const Item: React.FunctionComponent<Props> = ({ data, renderExpand, onClick }) => {
   return (
     <>
-      <div className="item">
+      <div className="item" onClick={() => onClick?.()}>
         {data.map(({ title, align, width }, index) => (
           <span
             key={index}

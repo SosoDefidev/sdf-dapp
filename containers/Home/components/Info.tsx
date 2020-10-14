@@ -9,7 +9,7 @@ import { usePool } from '@/shared/providers/PoolProvider'
 const { Text, Title } = Typography
 
 const TokenInfo: React.FunctionComponent = () => {
-  const { totalSupply, maxSupply, circulating, web3 } = useApp()
+  const { currentSupply, maxSupply, circulating, web3 } = useApp()
   const { t } = useLanguage()
 
   return (
@@ -28,7 +28,7 @@ const TokenInfo: React.FunctionComponent = () => {
             <Text type="secondary">{t('home.currentSupply')}</Text>
           </td>
           <td>
-            <Text>{web3.utils.fromWei(totalSupply)} SDF</Text>
+            <Text>{web3.utils.fromWei(currentSupply)} SDF</Text>
           </td>
         </tr>
         {/* <tr>
@@ -41,6 +41,9 @@ const TokenInfo: React.FunctionComponent = () => {
         </tr> */}
       </tbody>
       <style jsx>{`
+        table {
+          width: 100%;
+        }
         table tr td {
           padding: 5px 0;
 

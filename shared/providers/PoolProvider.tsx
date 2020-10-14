@@ -36,7 +36,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
   }, [web3])
 
   const initPool = () => {
-    return new currentWeb3.current.eth.Contract(POOL_ABI, currentPool.address)
+    return new currentWeb3.current.eth.Contract(POOL_ABI, currentPool?.address)
   }
 
   const stake = async (tokenAddress: string, amount: string): Promise<any> => {
@@ -162,9 +162,13 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [pendingReward, getTotal, getAllPoolLocked, currentPool.address])
+  }, [pendingReward, getTotal, getAllPoolLocked, currentPool?.address])
 
   React.useEffect(() => {
+    if (!currentPool?.address) {
+      return
+    }
+
     const pool = initPool()
     pool.methods
       .BLOCK_REWARD()
@@ -172,7 +176,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
       .then((data: string) => {
         setPerRewardBlock(data)
       })
-  }, [web3, currentPool.address])
+  }, [web3, currentPool?.address])
 
   return (
     <poolContext.Provider

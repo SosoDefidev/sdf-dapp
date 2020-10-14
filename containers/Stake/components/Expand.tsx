@@ -46,7 +46,7 @@ const Expand = ({
       <div className="container">
         <Input
           prefix={<USDTSvg width={22} height={22} />}
-          suffix={currentPool.name}
+          suffix={currentPool?.name}
           placeholder="0.00"
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -78,7 +78,7 @@ const Expand = ({
               }
 
               if (action === 'farm') {
-                const num = await erc20.allowance(currentPool.address + '')
+                const num = await erc20.allowance(currentPool?.address + '')
 
                 if (
                   new BigNumber(num).isLessThan(
@@ -86,7 +86,7 @@ const Expand = ({
                   )
                 ) {
                   pending.show('Approve pending')
-                  await erc20.approve(currentPool.address, maxValue).finally(() => {
+                  await erc20.approve(currentPool?.address ?? '', maxValue).finally(() => {
                     pending.hide()
                   })
                 }

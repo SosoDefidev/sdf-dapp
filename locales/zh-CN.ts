@@ -13,6 +13,7 @@ export default {
       pool: 'Pool',
       staked: '已质押',
       totalLock: '锁定总量',
+      rewardPerBlock: '奖励数量 / 区块',
       hourly: '小时收益率',
       daily: '日收益率',
       weekly: '周收益率',

@@ -9,6 +9,7 @@ export default {
     circulating: 'Circulating',
     currentSupply: 'Current Total Supply',
     maxSupply: 'MaxSupply',
+    rewardPerBlock: 'Reward / Block',
     list: {
       pool: 'Pool',
       staked: 'Staked',

@@ -9,6 +9,7 @@ import { useViewport } from '@/shared/providers/ViewportProvider'
 
 const Items = ({ label, value }: { label: React.ReactNode; value: string }) => {
   const theme = useTheme()
+
   return (
     <>
       <div>
@@ -51,8 +52,8 @@ const Items = ({ label, value }: { label: React.ReactNode; value: string }) => {
 
 const Pools: React.FunctionComponent = () => {
   const theme = useTheme()
+  const { pools, web3 } = useApp()
   const { width } = useViewport()
-  const app = useApp()
   const { t } = useLanguage()
 
   const options: DataType[] = [
@@ -82,7 +83,7 @@ const Pools: React.FunctionComponent = () => {
       )
     },
     {
-      title: t('home.list.staked')
+      title: t('home.list.rewardPerBlock')
     },
     {
       title: t('home.list.totalLock')
@@ -101,7 +102,7 @@ const Pools: React.FunctionComponent = () => {
     }
   ])
 
-  const items = app.pools.map((pool) =>
+  const items = pools.map((pool) =>
     combineOptions([
       {
         title: (
@@ -164,22 +165,31 @@ const Pools: React.FunctionComponent = () => {
         )
       },
       {
-        title: <Items label={t('home.list.staked')} value="12,345,654.67" />
+        title: (
+          <Items
+            label={t('home.list.rewardPerBlock')}
+            value={web3.utils.fromWei(pool.rewardPerBlock)}
+          />
+        )
       },
       {
-        title: <Items label={t('home.list.totalLock')} value="$12,345,654.67" />
+        title: (
+          <Items label={t('home.list.totalLock')} value={web3.utils.fromWei(pool.totalLocked)} />
+        )
       },
       {
-        title: <Items label={t('home.list.hourly')} value="0.01%" />
+        title: <Items label={t('home.list.hourly')} value={pool.hourRatio.toFixed(4) + '%'} />
       },
       {
-        title: <Items label={t('home.list.daily')} value="1.2%" />
+        title: <Items label={t('home.list.daily')} value={(pool.hourRatio * 24).toFixed(4) + '%'} />
       },
       {
-        title: <Items label={t('home.list.weekly')} value="1.34%" />
+        title: (
+          <Items label={t('home.list.weekly')} value={(pool.hourRatio * 24 * 7).toFixed(4) + '%'} />
+        )
       },
       {
-        title: <Items label={t('home.list.apy')} value="67.65%" />
+        title: <Items label={t('home.list.apy')} value={(pool.hourRatio * 365).toFixed(4) + '%'} />
       }
     ])
   )

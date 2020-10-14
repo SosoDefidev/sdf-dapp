@@ -98,7 +98,7 @@ const Farm: React.FunctionComponent = () => {
   const combineOptions = (data: DataType[]): DataType[] =>
     data.map((d, index) => ({ ...d, ...options[index] }))
 
-  const items = app.currentPool.supportTokens.map((token) =>
+  const items = app.currentPool?.supportTokens.map((token) =>
     combineOptions([
       {
         title: <TokenLocked token={token} />
@@ -159,12 +159,12 @@ const Farm: React.FunctionComponent = () => {
       </TopPanelContainer>
       <div className="list">
         <List>
-          {items.map((item, index) => (
+          {items?.map((item, index) => (
             <List.Item
               data={item}
               key={index}
               renderExpand={
-                currentToken?.address === app.currentPool.supportTokens[index].address
+                currentToken?.address === app.currentPool?.supportTokens[index].address
                   ? renderExpand
                   : undefined
               }

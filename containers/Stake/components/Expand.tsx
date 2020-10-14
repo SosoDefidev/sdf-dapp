@@ -46,7 +46,7 @@ const Expand = ({
       <div className="container">
         <Input
           prefix={<USDTSvg width={22} height={22} />}
-          suffix={currentPool?.name}
+          suffix={token?.name}
           placeholder="0.00"
           value={value}
           onChange={(e) => setValue(e.target.value)}

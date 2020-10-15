@@ -108,7 +108,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
         totalObj.totalLocked = data
         return totalObj
       })
-  }, [account, web3])
+  }, [account, web3, currentPool])
 
   const tokenLocked = async (tokenAddress: string): Promise<string> => {
     if (!account) {

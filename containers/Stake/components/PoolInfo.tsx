@@ -11,7 +11,7 @@ const { Text, Title } = Typography
 
 const PoolInfo: React.FunctionComponent = () => {
   const theme = useTheme()
-  const { web3 } = useApp()
+  const { web3, currentPool } = useApp()
   const pool = usePool()
   const { t } = useLanguage()
 
@@ -33,7 +33,7 @@ const PoolInfo: React.FunctionComponent = () => {
         <div className="cell">
           <Text type="secondary">{t('stake.farm.reward24h')}</Text>
           <Title level={4}>
-            {web3.utils.fromWei(estimated24h.isNaN() ? '0' : estimated24h.toFixed(0))} SDF
+            {estimated24h.isNaN() ? '0' : estimated24h.div(10 ** 18).toFixed(4)} SDF
           </Title>
         </div>
       </div>

@@ -90,6 +90,9 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
     if (!account) {
       return totalObj
     }
+    if (!currentPool) {
+      return totalObj
+    }
 
     const pool = initPool()
     return pool.methods
@@ -109,6 +112,9 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
 
   const tokenLocked = async (tokenAddress: string): Promise<string> => {
     if (!account) {
+      return '0'
+    }
+    if (!currentPool) {
       return '0'
     }
 
@@ -140,6 +146,10 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
     if (!account) {
       return '0'
     }
+    if (!currentPool) {
+      return '0'
+    }
+
     const pool = initPool()
     return pool.methods
       .pendingReward(account)
@@ -148,7 +158,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
         setReward(data)
         return data
       })
-  }, [account, web3])
+  }, [account, currentPool, web3])
 
   React.useEffect(() => {
     pendingReward()
@@ -162,7 +172,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [pendingReward, getTotal, getAllPoolLocked, currentPool?.address])
+  }, [pendingReward, getTotal, getAllPoolLocked, account, currentPool, web3])
 
   React.useEffect(() => {
     if (!currentPool?.address) {

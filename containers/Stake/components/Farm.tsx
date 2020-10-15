@@ -60,12 +60,17 @@ const Items = ({ title, desc }: { title: string; desc: React.ReactNode }) => {
 const TokenLocked: React.FunctionComponent<{ token: TokenType }> = ({ token }) => {
   const [locked, setLocked] = React.useState('0')
   const pool = usePool()
+  const { account } = useApp()
 
   React.useEffect(() => {
+    if (!account) {
+      return
+    }
+
     pool.tokenLocked(token.address).then((data) => {
       setLocked(data)
     })
-  }, [token.address])
+  }, [token.address, account])
 
   return (
     <Items

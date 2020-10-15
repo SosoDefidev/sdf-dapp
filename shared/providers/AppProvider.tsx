@@ -1,7 +1,7 @@
 import { ChainId, Fetcher, Route, Token } from '@uniswap/sdk'
 import BigNumber from 'bignumber.js'
 import React from 'react'
-import { useAsync, useInterval } from 'react-use'
+import { useAsync } from 'react-use'
 import { useWallet } from 'use-wallet'
 import Web3 from 'web3'
 

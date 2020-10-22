@@ -131,7 +131,7 @@ const PoolProvider: React.FunctionComponent = ({ children }) => {
     ).then((data) => {
       if (data.length > 0) {
         const sum = data
-          .map((d) => new BigNumber(d))
+          .map((d, i) => new BigNumber(d).multipliedBy(new BigNumber(pools[i].price)))
           .reduce((l, r) => {
             return l.plus(r)
           })

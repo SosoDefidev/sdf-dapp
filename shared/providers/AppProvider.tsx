@@ -1,4 +1,4 @@
-import { ChainId, Fetcher, Route, Token } from '@uniswap/sdk'
+import { ChainId, Fetcher, Token, TokenAmount } from '@uniswap/sdk'
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useAsync } from 'react-use'
@@ -29,6 +29,8 @@ export type PoolType = {
   hourRatio: number
   totalLocked: string
   rewardPerBlock: string
+  price: string
+  startTime: number
 } & ContractType
 
 const appContext = React.createContext<{
@@ -59,18 +61,60 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
     }
   }, [wallet])
   const erc20 = useERC20('0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14', account + '', web3)
+  const erc20_SDF_USDT_LP = useERC20(
+    '0xe87D49957b61B7e77352813Af2FD3920D96C10c4',
+    account + '',
+    web3
+  )
 
-  const { value: sdfPrice = '0.1' } = useAsync(async () => {
+  const { value: { sdfPrice = '0.11', sdfUsdtLpPrice = '663256' } = {} } = useAsync(async () => {
+    const UNI_SDF_USDT = new Token(
+      ChainId.MAINNET,
+      '0xe87D49957b61B7e77352813Af2FD3920D96C10c4',
+      18
+    )
     const SDF = new Token(ChainId.MAINNET, '0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14', 18)
     const USDT = new Token(ChainId.MAINNET, '0xdAC17F958D2ee523a2206206994597C13D831ec7', 6)
     const pair = await Fetcher.fetchPairData(SDF, USDT)
-
-    const route = new Route([pair], USDT)
-    return route.midPrice.invert().toSignificant()
+    return {
+      sdfPrice: pair.token0Price.toSignificant(),
+      sdfUsdtLpPrice: new BigNumber(pair.reserve1.toSignificant())
+        .multipliedBy(
+          new BigNumber(2).div(
+            new BigNumber(
+              new TokenAmount(UNI_SDF_USDT, await erc20_SDF_USDT_LP.totalSupply()).toSignificant()
+            )
+          )
+        )
+        .toFixed(4)
+    }
   }, [])
 
   const { value: pools = [] } = useAsync(async () => {
     const pools: PoolType[] = [
+      {
+        name: 'UNI_SDF_USDT',
+        icon: '/imgs/UNI_SDF_USDT.png',
+        address: '0xB5724fB47463882d13a66955c1447874033a1e3F',
+        abi: POOL_ABI,
+        totalReward: new BigNumber('345600')
+          .multipliedBy(new BigNumber('3000000000000000000'))
+          .toString(),
+        hourRatio: 0,
+        totalLocked: '0',
+        price: sdfUsdtLpPrice,
+        rewardPerBlock: '3000000000000000000',
+        startTime: 1603425600000,
+        supportTokens: [
+          {
+            name: 'UNI_SDF_USDT',
+            icon: '/imgs/UNI_SDF_USDT.png',
+            address: '0xe87D49957b61B7e77352813Af2FD3920D96C10c4',
+            abi: ERC20_ABI,
+            decimals: 18
+          }
+        ]
+      },
       {
         name: lang === 'zh-CN' ? '稳定币池' : 'Seed Pool',
         icon: '/imgs/USD.svg',
@@ -81,7 +125,9 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
           .toString(),
         hourRatio: 0,
         totalLocked: '0',
+        price: '1',
         rewardPerBlock: '300000000000000000',
+        startTime: 1602561600000,
         supportTokens: [
           {
             name: 'USDT',
@@ -118,16 +164,25 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
     const weiTotalSupplys = await Promise.all(
       pools.map((pool) => {
         const contract = new web3.eth.Contract(POOL_ABI, pool.address)
-        return contract.methods.weiTotalSupply().call()
+        return Promise.all([contract.methods.weiTotalSupply().call()])
       })
     )
 
-    return weiTotalSupplys.map((wei, index) => ({
-      ...pools[index],
-      hourRatio: (0.3 / Number(web3.utils.fromWei(wei))) * 4 * 60 * Number(sdfPrice) * 100,
-      totalLocked: wei
-    }))
-  }, [sdfPrice, web3])
+    return weiTotalSupplys.map(([wei], index) => {
+      return {
+        ...pools[index],
+        hourRatio:
+          ((Number(web3.utils.fromWei(pools[index].rewardPerBlock)) /
+            Number(web3.utils.fromWei(wei))) *
+            4 *
+            60 *
+            Number(sdfPrice) *
+            100) /
+          Number(pools[index].price),
+        totalLocked: wei
+      }
+    })
+  }, [sdfPrice, sdfUsdtLpPrice, web3])
 
   const [circulating, setCirculating] = React.useState<string>('0')
   const currentSupply = React.useMemo(() => {

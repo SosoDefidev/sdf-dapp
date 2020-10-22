@@ -1,4 +1,4 @@
-import { Tag } from 'antd'
+import { Statistic, Tag } from 'antd'
 import { useRouter } from 'next/router'
 import React from 'react'
 
@@ -8,6 +8,8 @@ import useTheme from '@/shared/hooks/useTheme'
 import { useApp } from '@/shared/providers/AppProvider'
 import { useLanguage } from '@/shared/providers/LanguageProvider'
 import { useViewport } from '@/shared/providers/ViewportProvider'
+
+const { Countdown } = Statistic
 
 const Items = ({ label, value }: { label: React.ReactNode; value: React.ReactNode }) => {
   const theme = useTheme()
@@ -115,8 +117,22 @@ const Pools: React.FunctionComponent = () => {
             }}>
             <div className="logo" />
             <div className="text">
-              <h6>{pool.name}</h6>
-              <p>{pool.supportTokens.map((token) => token.name).join(',')}</p>
+              <div>
+                <h6>{pool.name}</h6>
+                <p>{pool.supportTokens.map((token) => token.name).join(',')}</p>
+              </div>
+              {Date.now() < pool.startTime && (
+                <span style={{ textAlign: 'right' }}>
+                  <Countdown
+                    value={pool.startTime}
+                    format="HH:mm:ss"
+                    valueStyle={{
+                      fontSize: 14,
+                      color: theme['@primary-color']
+                    }}
+                  />
+                </span>
+              )}
             </div>
             <style jsx>{`
               span {
@@ -124,6 +140,7 @@ const Pools: React.FunctionComponent = () => {
                 align-items: center;
               }
               .logo {
+                flex: 0 0 auto;
                 width: 30px;
                 height: 30px;
                 margin-right: 12px;
@@ -132,6 +149,12 @@ const Pools: React.FunctionComponent = () => {
                 background: url(${pool.icon}) no-repeat;
                 background-size: cover;
                 background-position: center;
+              }
+              .text {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
               }
               .text h6 {
                 margin: 0;

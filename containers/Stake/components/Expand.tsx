@@ -45,7 +45,15 @@ const Expand = ({
     <>
       <div className="container">
         <Input
-          prefix={<USDTSvg width={22} height={22} />}
+          prefix={
+            <img
+              style={{ borderRadius: 11 }}
+              width={22}
+              height={22}
+              src={token?.icon}
+              alt="token"
+            />
+          }
           suffix={token?.name}
           placeholder="0.00"
           value={value}

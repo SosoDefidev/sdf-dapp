@@ -93,7 +93,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
   const { value: pools = [] } = useAsync(async () => {
     const pools: PoolType[] = [
       {
-        name: 'UNI_SDF_USDT',
+        name: 'uniswap(SDF-USDT)',
         icon: '/imgs/UNI_SDF_USDT.png',
         address: '0xB5724fB47463882d13a66955c1447874033a1e3F',
         abi: POOL_ABI,
@@ -107,7 +107,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
         startTime: 1603425600000,
         supportTokens: [
           {
-            name: 'UNI_SDF_USDT',
+            name: 'uniswap_SDF-USDT',
             icon: '/imgs/UNI_SDF_USDT.png',
             address: '0xe87D49957b61B7e77352813Af2FD3920D96C10c4',
             abi: ERC20_ABI,

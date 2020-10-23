@@ -17,7 +17,8 @@ export default {
       daily: 'Daily',
       weekly: 'Weekly',
       apy: 'APY'
-    }
+    },
+    goToLiquid: 'Goto liquid'
   },
   stake: {
     pool: {

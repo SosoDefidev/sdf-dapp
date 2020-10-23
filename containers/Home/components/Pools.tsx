@@ -1,4 +1,4 @@
-import { Statistic, Tag } from 'antd'
+import { Button, Space, Statistic, Tag } from 'antd'
 import { useRouter } from 'next/router'
 import React from 'react'
 
@@ -198,9 +198,20 @@ const Pools: React.FunctionComponent = () => {
           <Items
             label={t('home.list.rewardPerBlock')}
             value={
-              <Tag color="magenta" style={{ margin: 0 }}>
-                {web3.utils.fromWei(pool.rewardPerBlock)}SDF
-              </Tag>
+              <Space style={{ width: '100%' }} direction="vertical" align="end">
+                <Tag color="magenta" style={{ margin: 0 }}>
+                  {web3.utils.fromWei(pool.rewardPerBlock)}SDF
+                </Tag>
+                <Button
+                  size="small"
+                  onClick={() =>
+                    window.open(
+                      'https://uniswap.tokenpocket.pro/#/add/0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14-0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                    )
+                  }>
+                  {t('home.goToLiquid')}
+                </Button>
+              </Space>
             }
           />
         )

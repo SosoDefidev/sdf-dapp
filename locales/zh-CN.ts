@@ -18,7 +18,8 @@ export default {
       weekly: '周收益率',
       apy: '年化收益率'
     },
-    goToLiquid: '提供流动性(UNI)'
+    goToLiquid: '提供流动性(UNI)',
+    getSdf: 'USDT兑换SDF'
   },
   stake: {
     pool: {

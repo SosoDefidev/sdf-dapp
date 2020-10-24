@@ -18,7 +18,8 @@ export default {
       weekly: 'Weekly',
       apy: 'APY'
     },
-    goToLiquid: 'Goto liquid'
+    goToLiquid: 'Goto liquid',
+    getSdf: 'Convert SDF'
   },
   stake: {
     pool: {

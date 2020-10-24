@@ -93,6 +93,29 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
   const { value: pools = [] } = useAsync(async () => {
     const pools: PoolType[] = [
       {
+        name: lang === 'zh-CN' ? 'SSDF矿池' : 'SSDF Pool',
+        icon: '/imgs/SDF.jpg',
+        address: '0x3d1Bea69572def0463B5d52820F589D98BE445a9',
+        abi: POOL_ABI,
+        totalReward: new BigNumber('80640')
+          .multipliedBy(new BigNumber('3000000000000000000'))
+          .toString(),
+        hourRatio: 0,
+        totalLocked: '0',
+        price: '0.03',
+        rewardPerBlock: '3000000000000000000',
+        startTime: 1603598400000,
+        supportTokens: [
+          {
+            name: 'uniswap_SDF-USDT',
+            icon: '/imgs/SDF.jpg',
+            address: '0x3E3f23Ed6c70601a1DB08a961f59f6d269e29ED1',
+            abi: ERC20_ABI,
+            decimals: 18
+          }
+        ]
+      },
+      {
         name: 'uniswap(SDF-USDT)',
         icon: '/imgs/UNI_SDF_USDT.png',
         address: '0xB5724fB47463882d13a66955c1447874033a1e3F',

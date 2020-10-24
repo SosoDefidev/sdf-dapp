@@ -63,8 +63,9 @@ const Pools: React.FunctionComponent = () => {
 
   const options: DataType[] = [
     { width: width > 736 ? '20%' : '100%' },
-    { width: width > 736 ? '20%' : '100%' },
-    { width: width > 736 ? '20%' : '100%' },
+    { width: width > 736 ? '15%' : '100%' },
+    { width: width > 736 ? '15%' : '100%' },
+    { width: width > 736 ? '10%' : '100%' },
     { width: width > 736 ? '10%' : '100%' },
     { width: width > 736 ? '10%' : '100%' },
     { width: width > 736 ? '10%' : '100%' },
@@ -104,10 +105,13 @@ const Pools: React.FunctionComponent = () => {
     },
     {
       title: t('home.list.apy')
+    },
+    {
+      title: ''
     }
   ])
 
-  const items = pools.map((pool) =>
+  const items = pools.map((pool, index) =>
     combineOptions([
       {
         title: (
@@ -118,21 +122,24 @@ const Pools: React.FunctionComponent = () => {
             <div className="logo" />
             <div className="text">
               <div>
-                <h6>{pool.name}</h6>
+                <h6>
+                  {pool.name}
+                  {Date.now() < pool.startTime && (
+                    <span style={{ textAlign: 'right' }}>
+                      <Countdown
+                        value={pool.startTime}
+                        format="HH:mm:ss"
+                        prefix="Comming"
+                        valueStyle={{
+                          fontSize: 14,
+                          color: theme['@primary-color']
+                        }}
+                      />
+                    </span>
+                  )}
+                </h6>
                 <p>{pool.supportTokens.map((token) => token.name).join(',')}</p>
               </div>
-              {Date.now() < pool.startTime && (
-                <span style={{ textAlign: 'right' }}>
-                  <Countdown
-                    value={pool.startTime}
-                    format="HH:mm:ss"
-                    valueStyle={{
-                      fontSize: 14,
-                      color: theme['@primary-color']
-                    }}
-                  />
-                </span>
-              )}
             </div>
             <style jsx>{`
               span {
@@ -198,20 +205,9 @@ const Pools: React.FunctionComponent = () => {
           <Items
             label={t('home.list.rewardPerBlock')}
             value={
-              <Space style={{ width: '100%' }} direction="vertical" align="end">
-                <Tag color="magenta" style={{ margin: 0 }}>
-                  {web3.utils.fromWei(pool.rewardPerBlock)}SDF
-                </Tag>
-                <Button
-                  size="small"
-                  onClick={() =>
-                    window.open(
-                      'https://uniswap.tokenpocket.pro/#/add/0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14-0xdAC17F958D2ee523a2206206994597C13D831ec7'
-                    )
-                  }>
-                  {t('home.goToLiquid')}
-                </Button>
-              </Space>
+              <Tag color="magenta" style={{ margin: 0 }}>
+                {web3.utils.fromWei(pool.rewardPerBlock)}SDF
+              </Tag>
             }
           />
         )
@@ -234,6 +230,42 @@ const Pools: React.FunctionComponent = () => {
       },
       {
         title: <Items label={t('home.list.apy')} value={(pool.hourRatio * 365).toFixed(4) + '%'} />
+      },
+      {
+        title: (
+          <Items
+            label=""
+            value={
+              <>
+                {index === 0 && <span />}
+                {index === 1 && (
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={() =>
+                      window.open(
+                        'https://uniswap.tokenpocket.pro/#/add/0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14-0xdAC17F958D2ee523a2206206994597C13D831ec7'
+                      )
+                    }>
+                    {t('home.goToLiquid')}
+                  </Button>
+                )}
+                {index === 2 && (
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={() =>
+                      window.open(
+                        'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=0x62bfcc7748f7c1d660eb9537c8af778d8beb2b14'
+                      )
+                    }>
+                    {t('home.getSdf')}
+                  </Button>
+                )}
+              </>
+            }
+          />
+        )
       }
     ])
   )

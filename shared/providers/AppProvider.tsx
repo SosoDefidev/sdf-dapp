@@ -107,7 +107,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
         startTime: 1603598400000,
         supportTokens: [
           {
-            name: 'uniswap_SDF-USDT',
+            name: 'SSDF',
             icon: '/imgs/SDF.jpg',
             address: '0x3E3f23Ed6c70601a1DB08a961f59f6d269e29ED1',
             abi: ERC20_ABI,

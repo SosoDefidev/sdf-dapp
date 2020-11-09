@@ -47,6 +47,12 @@ const appContext = React.createContext<{
   tooglePool(pool: PoolType): void
 }>({} as any)
 
+const USDF_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+const SDF_ADDRESS = '0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14'
+const SSDF_ADDRESS = '0x3E3f23Ed6c70601a1DB08a961f59f6d269e29ED1'
+const SDF_USDT_LP_ADDRESS = '0xe87D49957b61B7e77352813Af2FD3920D96C10c4'
+const SSDF_USDT_LP_ADDRESS = '0xCbf76ca772eC7eFbfDe2592ac0906Ab7D3C77926'
+
 const AppProvider: React.FunctionComponent = ({ children }) => {
   const wallet = useWallet<any>()
   const { lang } = useLanguage()
@@ -60,24 +66,37 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
       return new Web3(RPC_URLS[wallet.chainId + ''])
     }
   }, [wallet])
-  const erc20 = useERC20('0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14', account + '', web3)
-  const erc20_SDF_USDT_LP = useERC20(
-    '0xe87D49957b61B7e77352813Af2FD3920D96C10c4',
-    account + '',
-    web3
-  )
+  const erc20 = useERC20(SDF_ADDRESS, account + '', web3)
+  const erc20_SDF_USDT_LP = useERC20(SDF_USDT_LP_ADDRESS, account + '', web3)
+  const erc20_SSDF_USDT_LP = useERC20(SSDF_USDT_LP_ADDRESS, account + '', web3)
 
-  const { value: { sdfPrice = '0.11', sdfUsdtLpPrice = '663256' } = {} } = useAsync(async () => {
-    const UNI_SDF_USDT = new Token(
-      ChainId.MAINNET,
-      '0xe87D49957b61B7e77352813Af2FD3920D96C10c4',
-      18
-    )
-    const SDF = new Token(ChainId.MAINNET, '0x62bfcc7748f7c1d660eb9537C8af778D8BEb2B14', 18)
-    const USDT = new Token(ChainId.MAINNET, '0xdAC17F958D2ee523a2206206994597C13D831ec7', 6)
+  const {
+    value: {
+      ssdfPrice = '0.03',
+      sdfPrice = '0.11',
+      ssdfUsdtLpPrice = '663256',
+      sdfUsdtLpPrice = '663256'
+    } = {}
+  } = useAsync(async () => {
+    const UNI_SDF_USDT = new Token(ChainId.MAINNET, SDF_USDT_LP_ADDRESS, 18)
+    const UNI_SSDF_USDT = new Token(ChainId.MAINNET, SDF_USDT_LP_ADDRESS, 18)
+    const SDF = new Token(ChainId.MAINNET, SDF_ADDRESS, 18)
+    const SSDF = new Token(ChainId.MAINNET, SSDF_ADDRESS, 18)
+    const USDT = new Token(ChainId.MAINNET, USDF_ADDRESS, 6)
     const pair = await Fetcher.fetchPairData(SDF, USDT)
+    const pair1 = await Fetcher.fetchPairData(SSDF, USDT)
     return {
+      ssdfPrice: '0.03',
       sdfPrice: pair.token0Price.toSignificant(),
+      ssdfUsdtLpPrice: new BigNumber(pair1.reserve1.toSignificant())
+        .multipliedBy(
+          new BigNumber(2).div(
+            new BigNumber(
+              new TokenAmount(UNI_SSDF_USDT, await erc20_SSDF_USDT_LP.totalSupply()).toSignificant()
+            )
+          )
+        )
+        .toFixed(4),
       sdfUsdtLpPrice: new BigNumber(pair.reserve1.toSignificant())
         .multipliedBy(
           new BigNumber(2).div(
@@ -93,6 +112,29 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
   const { value: pools = [] } = useAsync(async () => {
     const pools: PoolType[] = [
       {
+        name: 'uniswap(SSDF-USDT)',
+        icon: '/imgs/SDF.jpg',
+        address: '0x9bEEFf429bC111A43387beC2d5D5Af7c3f3bE13d',
+        abi: POOL_ABI,
+        totalReward: new BigNumber('93046')
+          .multipliedBy(new BigNumber('15000000000000000000'))
+          .toString(),
+        hourRatio: 0,
+        totalLocked: '0',
+        price: ssdfUsdtLpPrice,
+        rewardPerBlock: '15000000000000000000',
+        startTime: 1605024000000,
+        supportTokens: [
+          {
+            name: 'uniswap_SSDF-USDT',
+            icon: '/imgs/SDF.jpg',
+            address: '0xCbf76ca772eC7eFbfDe2592ac0906Ab7D3C77926',
+            abi: ERC20_ABI,
+            decimals: 18
+          }
+        ]
+      },
+      {
         name: lang === 'zh-CN' ? 'SSDF矿池' : 'SSDF Pool',
         icon: '/imgs/SDF.jpg',
         address: '0x3d1Bea69572def0463B5d52820F589D98BE445a9',
@@ -102,14 +144,14 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
           .toString(),
         hourRatio: 0,
         totalLocked: '0',
-        price: '0.03',
+        price: ssdfPrice,
         rewardPerBlock: '3000000000000000000',
         startTime: 1603598400000,
         supportTokens: [
           {
             name: 'SSDF',
             icon: '/imgs/SDF.jpg',
-            address: '0x3E3f23Ed6c70601a1DB08a961f59f6d269e29ED1',
+            address: SSDF_ADDRESS,
             abi: ERC20_ABI,
             decimals: 18
           }
@@ -132,7 +174,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
           {
             name: 'uniswap_SDF-USDT',
             icon: '/imgs/UNI_SDF_USDT.png',
-            address: '0xe87D49957b61B7e77352813Af2FD3920D96C10c4',
+            address: SDF_USDT_LP_ADDRESS,
             abi: ERC20_ABI,
             decimals: 18
           }
@@ -155,7 +197,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
           {
             name: 'USDT',
             icon: '/imgs/USDT.svg',
-            address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+            address: USDF_ADDRESS,
             abi: ERC20_ABI,
             decimals: 6
           },

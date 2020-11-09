@@ -237,8 +237,20 @@ const Pools: React.FunctionComponent = () => {
             label=""
             value={
               <>
-                {index === 0 && <span />}
-                {index === 1 && (
+                {index === 0 && (
+                  <Button
+                    size="small"
+                    type="primary"
+                    onClick={() =>
+                      window.open(
+                        'https://app.uniswap.org/#/swap?inputCurrency=0x3e3f23ed6c70601a1db08a961f59f6d269e29ed1&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7'
+                      )
+                    }>
+                    {t('home.goToLiquid')}
+                  </Button>
+                )}
+                {index === 1 && <span />}
+                {index === 2 && (
                   <Button
                     size="small"
                     type="primary"
@@ -250,7 +262,7 @@ const Pools: React.FunctionComponent = () => {
                     {t('home.goToLiquid')}
                   </Button>
                 )}
-                {index === 2 && (
+                {index === 3 && (
                   <Button
                     size="small"
                     type="primary"

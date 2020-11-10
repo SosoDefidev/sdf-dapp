@@ -114,7 +114,7 @@ const AppProvider: React.FunctionComponent = ({ children }) => {
       {
         name: 'uniswap(SSDF-USDT)',
         icon: '/imgs/SDF.jpg',
-        address: '0x9bEEFf429bC111A43387beC2d5D5Af7c3f3bE13d',
+        address: '0x959C566cAb9Ff5cB75B97E342699d979355C4eD1',
         abi: POOL_ABI,
         totalReward: new BigNumber('93046')
           .multipliedBy(new BigNumber('15000000000000000000'))

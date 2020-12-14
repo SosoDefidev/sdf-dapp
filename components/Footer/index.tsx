@@ -2,7 +2,6 @@ import { Col, Row, Typography } from 'antd'
 import Link from 'next/link'
 import React from 'react'
 
-import FacebookSvg from '@/icons/facebook.svg'
 import GithubSvg from '@/icons/github.svg'
 import TwitterSvg from '@/icons/twitter.svg'
 import useTheme from '@/shared/hooks/useTheme'

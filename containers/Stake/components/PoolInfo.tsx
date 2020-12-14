@@ -11,7 +11,7 @@ const { Text, Title } = Typography
 
 const PoolInfo: React.FunctionComponent = () => {
   const theme = useTheme()
-  const { web3, currentPool } = useApp()
+  const { web3 } = useApp()
   const pool = usePool()
   const { t } = useLanguage()
 

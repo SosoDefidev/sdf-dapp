@@ -1,7 +1,8 @@
 export default {
   header: {
     home: '首页',
-    stake: '挖矿'
+    stake: '挖矿',
+    assetsManage: '资产管理'
   },
   home: {
     totalLock: '锁定总量',

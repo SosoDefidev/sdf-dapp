@@ -4,7 +4,6 @@ import React from 'react'
 import { useAsyncRetry } from 'react-use'
 
 import EnableButton from '@/components/Button/EnableButton'
-import USDTSvg from '@/icons/USDT.svg'
 import useERC20 from '@/shared/hooks/useERC20'
 import useTheme from '@/shared/hooks/useTheme'
 import { TokenType, useApp } from '@/shared/providers/AppProvider'

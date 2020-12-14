@@ -1,7 +1,8 @@
 export default {
   header: {
     home: 'Home',
-    stake: 'Stake'
+    stake: 'Stake',
+    assetsManage: 'Assets'
   },
   home: {
     totalLock: 'Total Value Locked',

@@ -7,7 +7,7 @@ export const POOL_ABI = JSON.parse(
 )
 
 export const RPC_URLS: { [key: string]: string } = {
-  '1': 'https://mainnet.eth.aragon.network',
+  '1': 'https://eth-mainnet.zerion.io/',
   '4': 'https://rinkeby.eth.aragon.network'
 }
 

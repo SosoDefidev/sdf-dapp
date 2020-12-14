@@ -9,7 +9,7 @@ import { usePool } from '@/shared/providers/PoolProvider'
 const { Text, Title } = Typography
 
 const TokenInfo: React.FunctionComponent = () => {
-  const { currentSupply, maxSupply, circulating, web3 } = useApp()
+  const { currentSupply, circulating, web3 } = useApp()
   const { t } = useLanguage()
 
   return (
@@ -20,7 +20,7 @@ const TokenInfo: React.FunctionComponent = () => {
             <Text type="secondary">{t('home.circulating')}</Text>
           </td>
           <td>
-            <Text>{web3.utils.fromWei(circulating)} SDF</Text>
+            <Text>{Number(web3.utils.fromWei(circulating)).toFixed(4)} SDF</Text>
           </td>
         </tr>
         <tr>
@@ -28,7 +28,7 @@ const TokenInfo: React.FunctionComponent = () => {
             <Text type="secondary">{t('home.currentSupply')}</Text>
           </td>
           <td>
-            <Text>{web3.utils.fromWei(currentSupply)} SDF</Text>
+            <Text>{Number(web3.utils.fromWei(currentSupply)).toFixed(4)} SDF</Text>
           </td>
         </tr>
         {/* <tr>

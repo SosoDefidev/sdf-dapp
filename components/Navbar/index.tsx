@@ -24,7 +24,7 @@ const Navbar: React.FunctionComponent = () => {
           <ActiveLink href="/stake">
             <a>{t('header.stake')}</a>
           </ActiveLink>
-          <ActiveLink href="https://soassets.netlify.app/" target="_blank">
+          <ActiveLink href="https://soassets.netlify.app/">
             <a>{t('header.assetsManage')}</a>
           </ActiveLink>
         </div>

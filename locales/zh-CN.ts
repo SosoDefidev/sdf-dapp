@@ -2,7 +2,7 @@ export default {
   header: {
     home: '首页',
     stake: '挖矿',
-    assetsManage: '资产管理'
+    assetsManage: 'SSDF资产管理'
   },
   home: {
     totalLock: '锁定总量',
@@ -20,6 +20,7 @@ export default {
       apy: '年化收益率'
     },
     goToLiquid: '提供流动性(UNI)',
+    endd: '已结束',
     getSdf: 'USDT兑换SDF'
   },
   stake: {

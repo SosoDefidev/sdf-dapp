@@ -241,15 +241,20 @@ const Pools: React.FunctionComponent = () => {
                   <Button
                     size="small"
                     type="primary"
+                    disabled
                     onClick={() =>
                       window.open(
                         'https://app.uniswap.org/#/swap?inputCurrency=0x3e3f23ed6c70601a1db08a961f59f6d269e29ed1&outputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7'
                       )
                     }>
-                    {t('home.goToLiquid')}
+                    {t('home.endd')}
                   </Button>
                 )}
-                {index === 1 && <span />}
+                {index === 1 && (
+                  <Button size="small" disabled>
+                    {t('home.endd')}
+                  </Button>
+                )}
                 {index === 2 && (
                   <Button
                     size="small"
@@ -266,12 +271,13 @@ const Pools: React.FunctionComponent = () => {
                   <Button
                     size="small"
                     type="primary"
+                    disabled
                     onClick={() =>
                       window.open(
                         'https://app.uniswap.org/#/swap?inputCurrency=0xdac17f958d2ee523a2206206994597c13d831ec7&outputCurrency=0x62bfcc7748f7c1d660eb9537c8af778d8beb2b14'
                       )
                     }>
-                    {t('home.getSdf')}
+                    {t('home.endd')}
                   </Button>
                 )}
               </>

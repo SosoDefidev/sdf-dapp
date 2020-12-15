@@ -2,7 +2,7 @@ export default {
   header: {
     home: 'Home',
     stake: 'Stake',
-    assetsManage: 'Assets'
+    assetsManage: 'SSDF AssetsManage'
   },
   home: {
     totalLock: 'Total Value Locked',
@@ -20,6 +20,7 @@ export default {
       apy: 'APY'
     },
     goToLiquid: 'Goto liquid',
+    endd: 'End',
     getSdf: 'Convert SDF'
   },
   stake: {

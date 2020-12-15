@@ -66,7 +66,7 @@ const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ on
     }
   ])
 
-  const items = pools.map((pool) =>
+  const items = pools.map((pool, index) =>
     combineOptions([
       {
         title: (
@@ -151,9 +151,16 @@ const Pools: React.FunctionComponent<{ onSelect(pool: PoolType): void }> = ({ on
         title: (
           <Items>
             <>
-              <Button shape="round" onClick={() => onSelect(pool)}>
-                {t('stake.pool.farm')} <ArrowRightOutlined />
-              </Button>
+              {(index === 0 || index === 1 || index === 3) && (
+                <Button shape="round" disabled>
+                  {t('home.endd')}
+                </Button>
+              )}
+              {index === 2 && (
+                <Button shape="round" onClick={() => onSelect(pool)}>
+                  {t('stake.pool.farm')} <ArrowRightOutlined />
+                </Button>
+              )}
               <style jsx global>{`
                 .ant-btn.ant-btn-round {
                   padding: 0 30px;
